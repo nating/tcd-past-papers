@@ -1,4 +1,4 @@
-# trinity-examinations
+# Examinating
 A Website for students at Trinity College Dublin to more easily navigate the past examination papers. (In the very early stages of development.)
 
 ## Overview
