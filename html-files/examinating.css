@@ -38,17 +38,13 @@ h1 {
     list-style-type:none;
     position:relative;
     text-align:left;
+    margin-right:10%;
+    margin-left:10%;
 }
 .subjects li, .years li{
     border-radius: 2px;
     background-color:#FFFFFF;
     margin: 0 0 3px 0;
-    margin-right:10%;
-    margin-left:10%;
-}
-.subjects li{
-    padding-left: 3px;
-    padding-right: 3px;
 }
 .years{
     text-align:center;
@@ -121,4 +117,10 @@ h1 a, h1 a:hover{
     background-color:#BBBBBB;
     text-decoration:none;
     color:#FFFFFF;
+}
+input[type="checkbox"]{
+    display: inline-block;
+    vertical-align:middle;
+  width: 3px; /*Desired width*/
+  height: 3px; /*Desired height*/
 }
