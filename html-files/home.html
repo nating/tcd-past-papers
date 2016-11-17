@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <title>Examinating</title>
+    <link rel="stylesheet" type="text/css" href="examinating.css">
+</head>
+<body>
+    <div>
+        <ul class="site-page-links">
+            <li><a  href="index.html" id="MyModules">My Modules</a></li>
+            <li><a  href="courses.html" id="All Courses">All Courses</a></li>
+            <li><a  href="about.html" id="About">About</a></li>
+        </ul>
+    </div>
+    <div id="modulesBox">
+    </div>
+    <div id="yearsBox">
+    </div>
+    <script src="https://raw.githubusercontent.com/evanplaice/jquery-csv/master/src/jquery.csv.js">
+        
+        var NEW_USER = 0;
+        var LAST_ACTIVE_MODULE = 1;
+        var MODULES = 2;
+        
+        var lastActiveModule;
+        
+        var data = $.csv.toArrays("PastPapers.csv");
+        
+        var userDetails = getUserDetails();
+        
+        //Update variables on page load
+        window.onload() = function{
+            displayModulesBox();
+            displayYears();
+        }
+        
+        //Display the appropriate content for the user in the modulesBox.
+        var displayModulesBox = function(userDetails){
+            
+            var modulesBox = document.getElementById("modulesBox");
+            var yearsBox = document.getElementById("yearsBox");
+            
+            var newUser = userDetails[NEW_USER];
+            
+            if(newUser==true){
+                modulesBox.innerHTML = "helloworld "+
+                    data[0]+
+                   `<p>
+                        Welcome to Trinity Exam Papers. This website is for students to find past papers in a less convoluted way.
+
+                        This site uses cookies to remember what modules you do so that it can show you their past papers here when you visit it.
+
+                        To have your modules' past papers show up on the home page, tick which modules you study on the "All Courses" page.
+                    </p>`+data[0];
+            }
+            else{
+                var htmlListOfModuleNames = "<ul>"
+                for(var i=MODULES;i<userDetails.length;i++){
+                    var index = getLinkIndex(userDetails[i]);
+                    moduleNames[i] = data[index][2];
+                }
+                for(var i=0;i<moduleNames.length;i++){
+                    htmlListOfModuleNames += "<li>"+moduleNames[i]+"</li>";
+                }
+                var htmlListOfModuleNames = "</ul>"
+                modulesBox.innerHTML = htmlListOfModuleNames;
+            }
+        };
+        
+        //Display the years for a module in the yearsBox.
+        var displayYears = function(module){
+            lastActiveModule = module;
+            var htmlListOfYears = "<ul>"
+            for(var year=2016;year>1997;year--){
+                if(isLink(module,year)){
+                    link = getLink(module,year);
+                    htmlListOfModuleYears += "<li><a href=\""+link+"\">"+year+"</a></li>";
+                }
+            }
+            var htmlListOfModuleNames = "</ul>"
+            var yearsBox = document.getElementById("yearsBox");
+            yearsBox.innerHTML = htmlListOfYears;
+        };
+        
+        //Binary search data for module code.
+        var getLinkIndex = function(moduleCode){
+            
+            var low = 0;
+            var high = data.length-1;
+            var centre = (low+high)/2;
+            
+            while(low<high){
+                if(data[centre][0]==moduleCode){
+                    return centre;
+                }
+                else if(data[centre][0] < moduleCode){
+                    low = centre+1;
+                    centre = (low+high)/2;
+                }
+                if(data[centre][0] > moduleCode){
+                    high = centre-1;
+                    centre = (low+high)/2;
+                }
+            }
+            return -1;
+        };
+        
+        
+        //Check if the module has a link for that year.
+        var isLink = function(){
+            var index = getLinkIndex(module);
+            for(var i=0;i<YEARS;i++){
+                if(data[index+i][1]==year){
+                    return true;
+                }
+            }
+            return false;
+        };
+        
+        
+        //Get the link for a specific year of a module.
+        var getLink = function(module,year){
+            var index = getLinkIndex(module);
+            for(var i=0;i<YEARS;i++){
+                if(data[index+i][1]==year){
+                    return data[index][3];
+                }
+            }
+            return "No link found."
+        };
+        
+        //Get the user details from the Cookie.
+        var getUserDetails = function(){
+            return document.cookie.split(',');
+        };
+        
+        //Set the user details in the Cookie. The passed moduleCode is added or removed from the cookie.
+        var setUserDetails = function(moduleCode){
+            oldUserDetails = getUserDetails();
+            
+            var newCookie = "false";
+            newCookie += ","+lastActiveModule;
+            var alreadyPresent = false;
+            for(var i=MODULES;i<oldUserDetails.length;i++){
+                if(oldUserDetails[i]==moduleCode){
+                    alreadyPresent = true;
+                }
+                else{
+                    newCookie+=","+oldUserDetails[i];
+                }
+            }
+            if(alreadyPresent==false){
+                newCookie+=","+moduleCode;
+            }
+            
+            document.cookie = newCookie;
+            return newCookie;
+        };
+        
+    </script>
+</body>
