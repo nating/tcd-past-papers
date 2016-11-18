@@ -204,22 +204,23 @@
             }
             else{
                 var newCookie = "newUser=false; ";
-                var modules = "";
+                var modules = getCookie(modules);
+                var newModulesCookie = "";
                 var alreadyPresent = false;
-                for(var i=MODULES;i<oldUserDetails.length;i++){
-                    if(oldUserDetails[i]==moduleCode){
+                for(var i=0;i<modules.length;i++){
+                    if(modules[i]==moduleCode){
                         alreadyPresent = true;
                     }
                     else{
-                        modules += ","+oldUserDetails[i];
+                        newModulesCookie += ","+modules[i];
                     }
                 }
                 if(alreadyPresent==false){
-                    modules += ","+moduleCode;
-                    newCookie += "lastActiveModule="+moduleCode+"; modules="+modules+"; ";
+                    newModulesCookie += ","+moduleCode;
+                    newCookie += "lastActiveModule="+moduleCode+"; modules="+newModulesCookie+"; ";
                 }
                 else{
-                    newCookie = "lastActiveModule="+oldUserDetails[oldUserDetails.length-1]+"; modules="+modules+"; ";
+                    newCookie = "lastActiveModule="+modules[0]+"; modules="+newModulesCookie+"; ";
                 }
                 document.cookie = newCookie;
                 return newCookie;
