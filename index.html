@@ -174,11 +174,13 @@
         //Get the user details from the Cookie. Returns an array of values or an empty String.
         var getUserDetails = function(){
             if (document.cookie.length > 0) {
-                console.log("The cookie is: "+document.cookie);
+                console.log("The cookie is: "+document.cookie+".");
                 return document.cookie.split(',');
             }
-            console.log("There is no cookie at the moment.");
-            return "";
+            else{
+                console.log("The cookie is: "+document.cookie+".");
+                return "";
+            }
         };
         
         //Set the user details in the Cookie. The passed moduleCode is added or removed from the cookie.
