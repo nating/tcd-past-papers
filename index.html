@@ -175,7 +175,10 @@
         var getUserDetails = function(){
             if (document.cookie.length > 0) {
                 console.log("The cookie is: "+document.cookie+".");
-                return document.cookie.split(',');
+                var newUser = getCookie(newUser);
+                var lastActiveModule = getCookie(lastActiveModule);
+                var modules = getCookie(modules);
+                return {newUser,lastActiveModule,modules};
             }
             else{
                 console.log("The cookie is: "+document.cookie+".");
@@ -190,7 +193,7 @@
             
             //New User
             if(oldUserDetails==""){
-                var newCookie = "false,"+moduleCode+","+moduleCode;
+                var newCookie = "newUser=false; lastActiveModule="+moduleCode+"; modules="+moduleCode+"; ";
                 document.cookie = newCookie;
                 return 1;
             }
@@ -200,7 +203,7 @@
                 return 1;
             }
             else{
-                var newCookie = "false";
+                var newCookie = "newUser=false; ";
                 var modules = "";
                 var alreadyPresent = false;
                 for(var i=MODULES;i<oldUserDetails.length;i++){
@@ -213,14 +216,30 @@
                 }
                 if(alreadyPresent==false){
                     modules += ","+moduleCode;
-                    newCookie+=","+moduleCode+modules;
+                    newCookie += "lastActiveModule="+moduleCode+"; modules="+modules+"; ";
                 }
                 else{
-                    newCookie=","+oldUserDetails[oldUserDetails.length-1]+modules;
+                    newCookie = "lastActiveModule="+oldUserDetails[oldUserDetails.length-1]+"; modules="+modules+"; ";
                 }
                 document.cookie = newCookie;
                 return newCookie;
             }
+        };
+        
+        //Returns the value of a Cookie
+        var getCookie = function(cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for(var i = 0; i <ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length,c.length);
+                }
+            }
+            return "";
         };
     </script>
 </body>
