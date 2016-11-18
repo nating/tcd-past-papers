@@ -42,6 +42,7 @@
         }
         updateData = function(parsedFile) {
             data = parsedFile;
+            console.log("The saved cookie was: "+document.cookie+".");
             var modules = document.getElementById("MyModules");
             modules.innerHTML = data.length;
             displayModulesBox(data);
@@ -154,11 +155,13 @@
             //New User
             if(modules==""){
                 document.cookie = "lastActiveModule="+moduleCode+"; modules="+moduleCode+"; ";
+                console.log("The new cookie is: "+document.cookie+".");
                 return 1;
             }
             //User removing only checked module
             else if(moduleCode==modules[0] && modules.length==1){
                 document.cookie = "";
+                console.log("The new cookie is: "+document.cookie+".");
                 return 1;
             }
             else{
@@ -181,6 +184,7 @@
                     newCookie = "lastActiveModule="+last+"; modules="+modulesList+"; ";
                 }
                 document.cookie = newCookie;
+                console.log("The new cookie is: "+document.cookie+".");
                 return newCookie;
             }
         };
