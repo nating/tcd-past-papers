@@ -167,6 +167,7 @@
                 var modulesList = "";
                 var alreadyPresent = false;
                 for(var i=0;i<modules.length;i++){
+                    console.log("Checking that "+modules[i]+" is not "+moduleCode+".");
                     if(modules[i]==moduleCode){
                         alreadyPresent = true;
                     }
@@ -178,18 +179,19 @@
                     modulesList += ","+moduleCode;
                     document.cookie = "lastActiveModule="+moduleCode+"; "
                     document.cookie = "modules="+modulesList+"; ";
+                    console.log("3 The new cookie is: "+document.cookie+".");
                 }
                 else{
                     var last = getCookie("lastActiveModule");
                     if(last==moduleCode){
                         document.cookie = "lastActiveModule="+modules[0]+"; "
                         document.cookie = "modules="+modulesList+"; ";
-                        console.log("3 The new cookie is: "+document.cookie+".");
+                        console.log("4 The new cookie is: "+document.cookie+".");
                     }
                     else{
                         document.cookie = "lastActiveModule="+last+"; "
                         document.cookie = "modules="+modulesList+"; ";
-                        console.log("4 The new cookie is: "+document.cookie+".");
+                        console.log("5 The new cookie is: "+document.cookie+".");
                     }
                 }
             }
