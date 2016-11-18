@@ -12,6 +12,13 @@
             <li><a  href="about.html" id="About">About</a></li>
         </ul>
     </div>
+    <div>
+        <form action="demo_form.asp">
+          <input type="checkbox" id="Maths"> I like Maths<br>
+          <input type="checkbox" id="Science"> I like Science<br>
+          <input type="submit" value="Submit">
+        </form>
+    </div>
     <div id="modulesBox" onload="displayModulesBox()">
     </div>
     <div id="yearsBox" onload="displayYears()">
@@ -24,6 +31,8 @@
         var YEARS = 2016-1998;
         
         window.addEventListener('load',function(){ startUp();},false);
+        document.getElementById("Maths").addEventListener("onchange",function(){console.log("1");setUserDetails("MA2111");console.log("2");});
+        document.getElementById("Science").addEventListener("onchange",function(){console.log("3");setUserDetails("ST2641");console.log("4");});
         
         //Deal with how e.g. Elementary Greek is CL0021 and CL1005 (fix them in the CSV maybe?)
               
@@ -40,6 +49,7 @@
             modules.innerHTML = data.length;
             displayModulesBox(data);
             var userDetails = getUserDetails();
+            console.log();
             if(userDetails==""){
                 displayYears(data,"");
             }
@@ -87,6 +97,13 @@
             var htmlListOfModuleNames = "</ul>"
             var yearsBox = document.getElementById("yearsBox");
             yearsBox.innerHTML = htmlListOfYears;
+        
+            for(var year=2016;year>1997;year--){
+                if(isLink(data,moduleCode,year)){
+                    link = getLink(data,moduleCode,year);
+                    htmlListOfYears += "<li><a href=\""+link+"\">"+year+"</a></li>";
+                }
+            }
         };
         
         //Binary search data for module code.
