@@ -51,8 +51,8 @@
         }
         //Display the appropriate content for the user in the modulesBox.
         var displayModulesBox = function(data){
-            var modules = getCookie("modules");
-            if(modules==""){
+            var modulesString = getCookie("modules");
+            if(modulesString==""){
                 var modulesBox = document.getElementById("modulesBox");
                 modulesBox.innerHTML =`<p>
                         Welcome to Trinity Exam Papers. This website is for students to find past papers in a less convoluted way.
@@ -63,6 +63,7 @@
                     </p>`;
             }
             else{
+                var modules = moduleString.split(',');
                 var htmlListOfModuleNames = "<ul>"
                 for(var i=0;i<modules;i++){
                     var index = getLinkIndex(data,modules[i]);
@@ -150,10 +151,10 @@
         
         //Set the user details in the Cookie. The passed moduleCode is added or removed from the cookie.
         var setUserDetails = function(moduleCode){
-            var modules = getCookie("modules");
-            
+            var modulesString = getCookie("modules");
+            var modules = modulesString.split(',');
             //New User
-            if(modules==""){
+            if(modulesString==""){
                 document.cookie = "lastActiveModule="+moduleCode+"; "
                 document.cookie = "modules="+moduleCode+"; ";
                 console.log("1 The new cookie is: "+document.cookie+".");
