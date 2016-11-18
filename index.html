@@ -28,8 +28,6 @@
         var YEARS = 2016-1998;
         
         window.addEventListener('load',function(){ startUp();},false);
-        //document.getElementById("Maths").addEventListener("onchange",function(){console.log("1");setUserDetails("MA2111");console.log("2");});
-        //document.getElementById("Science").addEventListener("onchange",function(){console.log("3");setUserDetails("ST2641");console.log("4");});
         
         //Deal with how e.g. Elementary Greek is CL0021 and CL1005 (fix them in the CSV maybe?)
               
@@ -151,6 +149,7 @@
         
         //Set the user details in the Cookie. The passed moduleCode is added or removed from the cookie.
         var setUserDetails = function(moduleCode){
+            console.log("Setting now. What was clicked was: "+moduleCode);
             var modulesString = getCookie("modules");
             var modules = modulesString.split(',');
             //New User
