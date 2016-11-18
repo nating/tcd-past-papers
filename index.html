@@ -154,11 +154,8 @@
             
             //New User
             if(modules==""){
-                var newCookie = "lastActiveModule="+moduleCode+"; modules="+moduleCode+"; ";
-                document.cookie = newCookie;
-                var newModulesNow = getCookie("modules");
-                console.log("Now apparently the modules will be: "+newModulesNow);
-                console.log("Even though newCookie was: "+newCookie);
+                document.cookie = "lastActiveModule="+moduleCode+"; "
+                document.cookie = "modules="+moduleCode+"; ";
                 console.log("1 The new cookie is: "+document.cookie+".");
                 return 1;
             }
