@@ -191,6 +191,7 @@
             //New User
             if(oldUserDetails==""){
                 var newCookie = "false,"+moduleCode+","+moduleCode;
+                document.cookie = newCookie;
                 return 1;
             }
             //User removing only checked module
