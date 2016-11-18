@@ -169,19 +169,22 @@
                 for(var i=0;i<modules.length;i++){
                     console.log("Checking that "+modules[i]+" is not "+moduleCode+".");
                     if(modules[i]==moduleCode){
+                        console.log("It was.");
                         alreadyPresent = true;
                     }
                     else{
-                        modulesList += ","+modules[i];
+                        console.log("Adding "+modules[i]+" to the modulesList.");
+                        modulesList += modules[i]+",";
                     }
                 }
                 if(alreadyPresent==false){
-                    modulesList += ","+moduleCode;
+                    modulesList += moduleCode;
                     document.cookie = "lastActiveModule="+moduleCode+"; "
                     document.cookie = "modules="+modulesList+"; ";
                     console.log("3 The new cookie is: "+document.cookie+".");
                 }
                 else{
+                    modulesList = modulesList.substring(0, modulesList.length - 1);
                     var last = getCookie("lastActiveModule");
                     if(last==moduleCode){
                         document.cookie = "lastActiveModule="+modules[0]+"; "
