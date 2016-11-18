@@ -157,14 +157,11 @@
                 document.cookie = "lastActiveModule="+moduleCode+"; "
                 document.cookie = "modules="+moduleCode+"; ";
                 console.log("1 The new cookie is: "+document.cookie+".");
-                console.log("1 The modules are: "+getCookie("modules")+".");
-                return 1;
             }
             //User removing only checked module
             else if(moduleCode==modules[0] && modules.length==1){
                 document.cookie = "";
                 console.log("2 The new cookie is: "+document.cookie+".");
-                return 1;
             }
             else{
                 var modulesList = "";
@@ -179,16 +176,24 @@
                 }
                 if(alreadyPresent==false){
                     modulesList += ","+moduleCode;
-                    newCookie += "lastActiveModule="+moduleCode+"; modules="+modulesList+"; ";
+                    document.cookie = "lastActiveModule="+moduleCode+"; "
+                    document.cookie = "modules="+modulesList+"; ";
                 }
                 else{
                     var last = getCookie("lastActiveModule");
-                    newCookie = "lastActiveModule="+last+"; modules="+modulesList+"; ";
+                    if(last==moduleCode){
+                        document.cookie = "lastActiveModule="+modules[0]+"; "
+                        document.cookie = "modules="+modulesList+"; ";
+                        console.log("3 The new cookie is: "+document.cookie+".");
+                    }
+                    else{
+                        document.cookie = "lastActiveModule="+last+"; "
+                        document.cookie = "modules="+modulesList+"; ";
+                        console.log("4 The new cookie is: "+document.cookie+".");
+                    }
                 }
-                document.cookie = newCookie;
-                console.log("3 The new cookie is: "+document.cookie+".");
-                return newCookie;
             }
+            return 1;
         };
         
         //Returns the value of a Cookie
