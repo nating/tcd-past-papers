@@ -45,20 +45,13 @@
             var modules = document.getElementById("MyModules");
             modules.innerHTML = data.length;
             displayModulesBox(data);
-            var userDetails = getUserDetails();
-            console.log();
-            if(userDetails==""){
-                displayYears(data,"");
-            }
-            else{
-                var lastActiveModule = userDetails[LAST_ACTIVE_MODULE];
-                displayYears(data,lastActiveModule);
-            }
+            var lastActiveModule = getCookie("lastActiveModule");
+            displayYears(data,lastActiveModule);
         }
         //Display the appropriate content for the user in the modulesBox.
         var displayModulesBox = function(data){
-            var userDetails = getUserDetails();
-            if(userDetails==""){
+            var modules = getCookie("modules");
+            if(modules==""){
                 var modulesBox = document.getElementById("modulesBox");
                 modulesBox.innerHTML =`<p>
                         Welcome to Trinity Exam Papers. This website is for students to find past papers in a less convoluted way.
@@ -70,8 +63,8 @@
             }
             else{
                 var htmlListOfModuleNames = "<ul>"
-                for(var i=MODULES;i<userDetails.length;i++){
-                    var index = getLinkIndex(data,userDetails[i]);
+                for(var i=0;i<modules;i++){
+                    var index = getLinkIndex(data,modules[i]);
                     htmlListOfModuleNames += "<li id=\""+data[index][0]+"\">"+data[index][0]+" "+data[index][2]+"</li>";
                 }
                 var htmlListOfModuleNames = "</ul>"
@@ -154,73 +147,38 @@
             return "No link found."
         };
         
-        /*
-        getCookie = function(c_name) {
-            if (document.cookie.length > 0) {
-                c_start = document.cookie.indexOf(c_name + "=");
-                if (c_start != -1) {
-                    c_start = c_start + c_name.length + 1;
-                    c_end = document.cookie.indexOf(";", c_start);
-                    if (c_end == -1) {
-                        c_end = document.cookie.length;
-                    }
-                    return unescape(document.cookie.substring(c_start, c_end));
-                }
-            }
-            return "";
-        }
-        */
-        
-        //Get the user details from the Cookie. Returns an array of values or an empty String.
-        var getUserDetails = function(){
-            if (document.cookie.length > 0) {
-                console.log("The cookie is: "+document.cookie+".");
-                var newUser = getCookie(newUser);
-                var lastActiveModule = getCookie(lastActiveModule);
-                var modules = getCookie(modules);
-                return {newUser,lastActiveModule,modules};
-            }
-            else{
-                console.log("The cookie is: "+document.cookie+".");
-                return "";
-            }
-        };
-        
         //Set the user details in the Cookie. The passed moduleCode is added or removed from the cookie.
         var setUserDetails = function(moduleCode){
-            console.log("Heyooo");
-            var oldUserDetails = getUserDetails();
+            var modules = getCookie("modules");
             
             //New User
-            if(oldUserDetails==""){
-                var newCookie = "newUser=false; lastActiveModule="+moduleCode+"; modules="+moduleCode+"; ";
-                document.cookie = newCookie;
+            if(modules==""){
+                document.cookie = "lastActiveModule="+moduleCode+"; modules="+moduleCode+"; ";
                 return 1;
             }
             //User removing only checked module
-            else if(moduleCode==oldUserDetails[1] && oldUserDetails.length==3){
+            else if(moduleCode==modules[0] && modules.length==1){
                 document.cookie = "";
                 return 1;
             }
             else{
-                var newCookie = "newUser=false; ";
-                var modules = getCookie(modules);
-                var newModulesCookie = "";
+                var modulesList = "";
                 var alreadyPresent = false;
                 for(var i=0;i<modules.length;i++){
                     if(modules[i]==moduleCode){
                         alreadyPresent = true;
                     }
                     else{
-                        newModulesCookie += ","+modules[i];
+                        modulesList += ","+modules[i];
                     }
                 }
                 if(alreadyPresent==false){
-                    newModulesCookie += ","+moduleCode;
-                    newCookie += "lastActiveModule="+moduleCode+"; modules="+newModulesCookie+"; ";
+                    modulesList += ","+moduleCode;
+                    newCookie += "lastActiveModule="+moduleCode+"; modules="+modulesList+"; ";
                 }
                 else{
-                    newCookie = "lastActiveModule="+modules[0]+"; modules="+newModulesCookie+"; ";
+                    var last = getCookie("lastActiveModule");
+                    newCookie = "lastActiveModule="+last+"; modules="+modulesList+"; ";
                 }
                 document.cookie = newCookie;
                 return newCookie;
