@@ -2,38 +2,45 @@
 <head>
     <meta charset="utf-8">
     <title>Examinating</title>
-    <link rel="stylesheet" type="text/css" href="examinating.css">
+    <script src="http://papaparse.com/resources/js/papaparse.js"></script>
 </head>
 <body>
     <div>
-        <ul class="site-page-links">
+        <ul class="site-page-links" onload="displayModulesBox()">
             <li><a  href="index.html" id="MyModules">My Modules</a></li>
             <li><a  href="courses.html" id="All Courses">All Courses</a></li>
             <li><a  href="about.html" id="About">About</a></li>
         </ul>
     </div>
-    <div id="modulesBox">
+    <div id="modulesBox" onload="displayModulesBox()">
     </div>
-    <div id="yearsBox">
+    <div id="yearsBox" onload="displayYears()">
     </div>
-    <script src="https://raw.githubusercontent.com/evanplaice/jquery-csv/master/src/jquery.csv.js">
+    <script>
         
         var NEW_USER = 0;
         var LAST_ACTIVE_MODULE = 1;
         var MODULES = 2;
+        var data;
+        var lastActiveModule = "";
+        var userDetails;
         
-        var lastActiveModule;
+        window.addEventListener('load',function(){ startUp();},false);
         
-        var data = $.csv.toArrays("PastPapers.csv");
+        //Code run once the page is loaded.
+        var startUp = function(){
         
-        var userDetails = getUserDetails();
+            userDetails = getUserDetails();
         
-        //Update variables on page load
-        window.onload = function(){
-            alert("Working!!"); 
-            displayModulesBox();
-            displayYears();
-            modulesBox.innerHTML = "helloworld pal ";
+            parseData("https://raw.githubusercontent.com/nating/examinating/master/PastPapers.csv", updateData);
+        }
+        parseData = function(url, callBack) {
+            Papa.parse(url,{download: true, dynamicTyping: true, complete: function(results){ callBack(results.data);} });
+        }
+        updateData = function(parsedFile) {
+            data = parsedFile;
+            displayModulesBox(userDetails);
+            displayYears(lastActiveModule);
         }
         
         //Display the appropriate content for the user in the modulesBox.
@@ -59,10 +66,7 @@
                 var htmlListOfModuleNames = "<ul>"
                 for(var i=MODULES;i<userDetails.length;i++){
                     var index = getLinkIndex(userDetails[i]);
-                    moduleNames[i] = data[index][2];
-                }
-                for(var i=0;i<moduleNames.length;i++){
-                    htmlListOfModuleNames += "<li>"+moduleNames[i]+"</li>";
+                    htmlListOfModuleNames += "<li id=\""+userDetails[i]+"\">"+data[index][2]+"</li>";
                 }
                 var htmlListOfModuleNames = "</ul>"
                 modulesBox.innerHTML = htmlListOfModuleNames;
@@ -71,6 +75,7 @@
         
         //Display the years for a module in the yearsBox.
         var displayYears = function(module){
+            if(module==""){ return -1; }
             lastActiveModule = module;
             var htmlListOfYears = "<ul>"
             for(var year=2016;year>1997;year--){
@@ -133,7 +138,10 @@
         
         //Get the user details from the Cookie.
         var getUserDetails = function(){
-            return document.cookie.split(',');
+            var cookie = document.cookie;
+            if(cookie = ""){ return "true,"; }
+            else{
+            return document.cookie.split(',');}
         };
         
         //Set the user details in the Cookie. The passed moduleCode is added or removed from the cookie.
@@ -158,6 +166,10 @@
             document.cookie = newCookie;
             return newCookie;
         };
+        
+        if (window.attachEvent) {window.attachEvent('onload', startUp());}
+        else if (window.addEventListener) {window.addEventListener('load', startUp(), false);}
+        else {document.addEventListener('load', startUp(), false);}
         
     </script>
 </body>
