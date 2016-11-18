@@ -157,6 +157,7 @@
                 document.cookie = "lastActiveModule="+moduleCode+"; "
                 document.cookie = "modules="+moduleCode+"; ";
                 console.log("1 The new cookie is: "+document.cookie+".");
+                console.log("1 The modules are: "+getCookie("modules")+".");
                 return 1;
             }
             //User removing only checked module
