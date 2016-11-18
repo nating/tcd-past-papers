@@ -13,8 +13,8 @@
         </ul>
     </div>
     <div>
-      <input type="checkbox" id="Maths"> I like Maths<br>
-      <input type="checkbox" id="Science"> I like Science<br>
+      <input type="checkbox" id="Maths" onclick='setUserDetails(MA2111);'> I like Maths<br>
+      <input type="checkbox" id="Science" onclick='setUserDetails(ST2641);'> I like Science<br>
     </div>
     <div id="modulesBox" onload="displayModulesBox()">
     </div>
@@ -28,8 +28,8 @@
         var YEARS = 2016-1998;
         
         window.addEventListener('load',function(){ startUp();},false);
-        document.getElementById("Maths").addEventListener("onchange",function(){console.log("1");setUserDetails("MA2111");console.log("2");});
-        document.getElementById("Science").addEventListener("onchange",function(){console.log("3");setUserDetails("ST2641");console.log("4");});
+        //document.getElementById("Maths").addEventListener("onchange",function(){console.log("1");setUserDetails("MA2111");console.log("2");});
+        //document.getElementById("Science").addEventListener("onchange",function(){console.log("3");setUserDetails("ST2641");console.log("4");});
         
         //Deal with how e.g. Elementary Greek is CL0021 and CL1005 (fix them in the CSV maybe?)
               
