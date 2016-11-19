@@ -195,6 +195,9 @@
                 centre = Math.round((low+high)/2);
                 courseCodeAtCentre = data[centre][0].substring(0,2);
                 if(courseCodeAtCentre==courseCode){
+                    while(centre!=0 && data[centre-1][0].substring(0,2)==courseCode){
+                        centre--;
+                    }
                     return centre;
                 }
                 else if(courseCodeAtCentre < courseCode){
