@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <title>Examinating - Courses</title>
+    <script src="https://raw.githubusercontent.com/mholt/PapaParse/master/papaparse.js"></script>
+</head>
+<body>
+    <div>
+        <ul class="site-page-links">
+            <li><a  href="index.html" id="MyModules">My Modules</a></li>
+            <li><a  href="courses.html" id="All Courses">All Courses</a></li>
+            <li><a  href="about.html" id="About">About</a></li>
+        </ul>
+    </div>
+    <div id="options">
+        pow
+    </div>
+    <script>
+        
+        var MODULE_ID = 0;
+        var YEAR_OF_COURSE = 1;
+        var MODULE_NAME = 2;
+        var LINK = 3;
+        var ACADEMIC_YEAR = 4;
+        var LAST_ACTIVE_MODULE = 1;
+        var MODULES = 2;
+        var YEARS = 2016-1998;
+        
+        window.addEventListener('load',function(){ startUp();},false);
+        
+        var csvRows;
+        
+        //Code run once the page is loaded.
+        var startUp = function(){
+            parseData("https://raw.githubusercontent.com/nating/examinating/master/PastPapers.csv", updateData);
+            showAllCourses();
+        }
+        parseData = function(url, callBack) {
+            Papa.parse(url,{download: true, dynamicTyping: true, complete: function(results){ callBack(results.data);} });
+        }
+        updateData = function(parsedFile) {
+            csvRows = parsedFile;
+        }
+        
+        var prepareLinks = function() {
+            var links = document.getElementsByTagName('a');
+            for(var i=0;i<links.length;i++) {
+                var link = links[i];
+                if(link.parentElement.parentElement.getAttribute('class') == 'courses') {
+                    link.setAttribute("onclick","showYearsOfCourse("+link.getAttribute('id')+");");
+                }
+            }
+        }
+        
+        var showAllCourses = function(){
+            var options = document.getElementById("options");
+            options.innerHTML = `
+                <ul class="courses">
+                    <li><a id="AN">Anatomy</a>
+                    <li><a id="AP">Foundation Course for Higher Education</a>
+                    <li><a id="BI">Biochemistry &amp; Immunology</a>
+                    <li><a id="BO">Botany</a></li>
+                    <li><a id="BU">Business Studies</a></li>
+                    <li><a id="BY">Biology</a></li>
+                    <li><a id="CE">Civil Structural &amp; Enviromental Engineering</a></li>
+                    <li><a id="CH">Chemistry</a></li>
+                    <li><a id="CL">Classics</a></li>
+                    <li><a id="CS">Computer Science</a></li>
+                    <li><a id="DE">Dental Studies</a></li>
+                    <li><a id="DF">Deaf Studies</a></li>
+                    <li><a id="DR">Drama</a></li>
+                    <li><a id="EC">Economics</a></li>
+                    <li><a id="EE">Electrical &amp; Electronic Engineering</a></li>
+                    <li><a id="EN">English</a></li>
+                    <li><a id="ES">Enviromental Science</a></li>
+                    <li><a id="ET">Music Education</a></li>
+                    <li><a id="FB">Functional Biology</a></li>
+                    <li><a id="FR">French</a></li>
+                    <li><a id="GE">Genetics &amp; Microbiology</a></li>
+                    <li><a id="GG">Geography</a></li>
+                    <li><a id="GL">Geology</a></li>
+                    <li><a id="GR">German</a></li>
+                    <li><a id="HA">History of Art</a></li>
+                    <li><a id="HE">Religions &amp; Theology</a></li>
+                    <li><a id="HH">Histories &amp; Humanitaries</a></li>
+                    <li><a id="HI">History</a></li>
+                    <li><a id="IE">Imagining Ireland</a></li>
+                    <li><a id="IR">Irish Studies</a></li>
+                    <li><a id="IT">Italian</a></li>
+                    <li><a id="LA">Law</a></li>
+                    <li><a id="LI">Linguistics</a></li>
+                    <li><a id="LY">Loyola Institute</a></li>
+                    <li><a id="MA">Mathematics</a></li>
+                    <li><a id="MD">Medicine</a></li>
+                    <li><a id="ME">Mechanical &amp; Manufactural Engineering</a></li>
+                    <li><a id="MI">Microbiology</a></li>
+                    <li><a id="MU">Music</a></li>
+                    <li><a id="MW">Midwifery</a></li>
+                    <li><a id="NM">Near &amp; Middle Eastern Studies</a></li>
+                    <li><a id="NU">Nursing</a></li>
+                    <li><a id="OT">Occupational Therapy</a></li>
+                    <li><a id="PG">Physiology</a></li>
+                    <li><a id="PH">Pharmacy</a></li>
+                    <li><a id="PI">Phisiology</a></li>
+                    <li><a id="PL">Polish</a></li>
+                    <li><a id="PO">Political Science</a></li>
+                    <li><a id="PR">Psychiatry</a></li>
+                    <li><a id="PS">Psychology</a></li>
+                    <li><a id="PT">Physiotherapy</a></li>
+                    <li><a id="PY">Physics</a></li>
+                    <li><a id="RT">Radiotherapy</a></li>
+                    <li><a id="RU">Russian &amp; Slavonic Studies</a></li>
+                    <li><a id="SL">Clinical Speech &amp; Language Studies</a></li>
+                    <li><a id="SO">Sociology</a></li>
+                    <li><a id="SP">Hispanic Studies</a></li>
+                    <li><a id="SS">Social Work &amp; Social Policy</a></li>
+                    <li><a id="ST">Statistics</a></li>
+                    <li><a id="ZO">Zoology</a></li>
+                </ul>`;
+            prepareLinks();
+        }
+        
+        var showYearsOfCourse = function(linkElement){
+            var listOfYears = "<ul id=\"years\">";
+            var courseCode = linkElement.getAttribute('id');
+            var index = getCourseIndex(csvRows,courseCode);
+            var maxYear = 1;
+            while(csvRows[index][ACADEMIC_YEAR].indexOf(courseCode)==0){
+                //listOfYears += "<li id=\""+csvRows[index][0]+"\">"+csvRows[index][0].charAt(2)+"st year</li>";
+                if(csvRows[index][ACADEMIC_YEAR] > maxYear){
+                    maxYear = csvRows[index][ACADEMIC_YEAR];
+                }
+                index++;
+            }
+            for(var i=1;i<maxYear;i++){
+                switch(i){
+                    case 1: listOfYears += "<li id=1stYear>"+i+"st year</li>";
+                    case 2: listOfYears += "<li id=2ndYear>"+i+"nd year</li>";
+                    case 3: listOfYears += "<li id=3rdYear>"+i+"nd year</li>";
+                    default: listOfYears += "<li id=\""+i+"thYear\">"+i+"th year</li>";
+                }
+            }
+            listOfYears += "</ul>"
+
+            var options = document.getElementById("options");
+            options.innerHTML = listOfYears;
+        }
+        
+        
+        //Binary search data for a course.
+        var getCourseIndex = function(data,courseCode){
+            
+            var low = 0;
+            var high = data.length-1;
+            var centre;
+            var courseCodeAtCentre;
+            
+            while(low<=high){
+                centre = Math.round((low+high)/2);
+                courseCodeAtCentre = data[centre][0].substring(0,2);
+                console.log('The courseCodeAtCentre is: '+courseCodeAtCentre);
+                if(courseCodeAtCentre==courseCode){
+                    return centre;
+                }
+                else if(courseCodeAtCentre < courseCode){
+                    low = centre+1;
+                }
+                if(courseCodeAtCentre > courseCode){
+                    high = centre-1;
+                }
+            }
+            console.log("No link was found for the courseCode: "+courseCode);
+            return -1;
+        };
+        
+    </script>
+</body>

@@ -6,7 +6,7 @@
 </head>
 <body>
     <div>
-        <ul class="site-page-links" onload="displayModulesBox()">
+        <ul class="site-page-links">
             <li><a  href="index.html" id="MyModules">My Modules</a></li>
             <li><a  href="courses.html" id="All Courses">All Courses</a></li>
             <li><a  href="about.html" id="About">About</a></li>
@@ -22,7 +22,12 @@
     </div>
     <script>
         
-        var NEW_USER = 0;
+        var MODULE_ID = 0;
+        var YEAR_OF_COURSE = 1;
+        var MODULE_NAME = 2;
+        var LINK = 3;
+        var ACADEMIC_YEAR = 4;
+        
         var LAST_ACTIVE_MODULE = 1;
         var MODULES = 2;
         var YEARS = 2016-1998;
@@ -52,10 +57,11 @@
             var modulesString = getCookie("modules");
             if(modulesString==""){
                 var modulesBox = document.getElementById("modulesBox");
-                modulesBox.innerHTML =`<p>
+                modulesBox.innerHTML =
+                    `<p>
                         Welcome to Trinity Exam Papers. This website is for students to find past papers in a less convoluted way.
 
-                        This site uses cookies to remember what modules you do so that it can show you their past papers here when you visit it.
+                        This site uses cookies to remember what modules you do so that it can show you those past papers when you visit.
 
                         To have your modules' past papers show up on the home page, tick which modules you study on the "All Courses" page.
                     </p>`;
@@ -67,7 +73,7 @@
                     var index = getLinkIndex(data,modules[i]);
                     htmlListOfModuleNames += "<li id=\""+data[index][0]+"\">"+data[index][0]+" "+data[index][2]+"</li>";
                 }
-                var htmlListOfModuleNames = "</ul>"
+                htmlListOfModuleNames += "</ul>"
             
                 var modulesBox = document.getElementById("modulesBox");
                 modulesBox.innerHTML = htmlListOfModuleNames;
