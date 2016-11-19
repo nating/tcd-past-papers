@@ -42,108 +42,144 @@
             csvRows = parsedFile;
         }
         
-        var prepareLinks = function() {
-            var links = document.getElementsByTagName('a');
+        var showAllCourses = function(){
+            var options = document.getElementById("options");
+            options.innerHTML = `
+                <ul class="courses">
+                    <li id="AN">Anatomy</li>
+                    <li id="AP">Foundation Course for Higher Education</li>
+                    <li id="BI">Biochemistry &amp; Immunology</li>
+                    <li id="BO">Botany</li>
+                    <li id="BU">Business Studies</li>
+                    <li id="BY">Biology</li>
+                    <li id="CE">Civil Structural &amp; Enviromental Engineering</li>
+                    <li id="CH">Chemistry</li>
+                    <li id="CL">Classics</li>
+                    <li id="CS">Computer Science</li>
+                    <li id="DE">Dental Studies</li>
+                    <li id="DF">Deaf Studies</li>
+                    <li id="DR">Drama</li>
+                    <li id="EC">Economics</a></li>
+                    <li id="EE">Electrical &amp; Electronic Engineering</li>
+                    <li id="EN">English</li>
+                    <li id="ES">Enviromental Science</li>
+                    <li id="ET">Music Education</li>
+                    <li id="FB">Functional Biology</li>
+                    <li id="FR">French</li>
+                    <li id="GE">Genetics &amp; Microbiology</li>
+                    <li id="GG">Geography</li>
+                    <li id="GL">Geology</li>
+                    <li id="GR">German</li>
+                    <li id="HA">History of Art</li>
+                    <li id="HE">Religions &amp; Theology</li>
+                    <li id="HH">Histories &amp; Humanitaries</li>
+                    <li id="HI">History</li>
+                    <li id="IE">Imagining Ireland</li>
+                    <li id="IR">Irish Studies</li>
+                    <li id="IT">Italian</li>
+                    <li id="LA">Law</li>
+                    <li id="LI">Linguistics</li>
+                    <li id="LY">Loyola Institute</li>
+                    <li id="MA">Mathematics</li>
+                    <li id="MD">Medicine</li>
+                    <li id="ME">Mechanical &amp; Manufactural Engineering</li>
+                    <li id="MI">Microbiology</li>
+                    <li id="MU">Music</li>
+                    <li id="MW">Midwifery</a></li>
+                    <li id="NM">Near &amp; Middle Eastern Studies</li>
+                    <li id="NU">Nursing</a></li>
+                    <li id="OT">Occupational Therapy</li>
+                    <li id="PG">Physiology</li>
+                    <li id="PH">Pharmacy</li>
+                    <li id="PI">Phisiology</li>
+                    <li id="PL">Polish</li>
+                    <li id="PO">Political Science</li>
+                    <li id="PR">Psychiatry</li>
+                    <li id="PS">Psychology</li>
+                    <li id="PT">Physiotherapy</li>
+                    <li id="PY">Physics</li>
+                    <li id="RT">Radiotherapy</li>
+                    <li id="RU">Russian &amp; Slavonic Studies</li>
+                    <li id="SL">Clinical Speech &amp; Language Studies</li>
+                    <li id="SO">Sociology</li>
+                    <li id="SP">Hispanic Studies</li>
+                    <li id="SS">Social Work &amp; Social Policy</li>
+                    <li id="ST">Statistics</li>
+                    <li id="ZO">Zoology</li>
+                </ul>`;
+            makeCoursesClickable();
+        }
+        
+        var makeCoursesClickable = function() {
+            var links = document.getElementsByTagName('li');
             for(var i=0;i<links.length;i++) {
                 var link = links[i];
-                if(link.parentElement.parentElement.getAttribute('class') == 'courses') {
+                if(link.parentElement.getAttribute('class') == 'courses') {
                     link.setAttribute("onclick","showYearsOfCourse("+link.getAttribute('id')+");");
                 }
             }
         }
         
-        var showAllCourses = function(){
-            var options = document.getElementById("options");
-            options.innerHTML = `
-                <ul class="courses">
-                    <li><a id="AN">Anatomy</a>
-                    <li><a id="AP">Foundation Course for Higher Education</a>
-                    <li><a id="BI">Biochemistry &amp; Immunology</a>
-                    <li><a id="BO">Botany</a></li>
-                    <li><a id="BU">Business Studies</a></li>
-                    <li><a id="BY">Biology</a></li>
-                    <li><a id="CE">Civil Structural &amp; Enviromental Engineering</a></li>
-                    <li><a id="CH">Chemistry</a></li>
-                    <li><a id="CL">Classics</a></li>
-                    <li><a id="CS">Computer Science</a></li>
-                    <li><a id="DE">Dental Studies</a></li>
-                    <li><a id="DF">Deaf Studies</a></li>
-                    <li><a id="DR">Drama</a></li>
-                    <li><a id="EC">Economics</a></li>
-                    <li><a id="EE">Electrical &amp; Electronic Engineering</a></li>
-                    <li><a id="EN">English</a></li>
-                    <li><a id="ES">Enviromental Science</a></li>
-                    <li><a id="ET">Music Education</a></li>
-                    <li><a id="FB">Functional Biology</a></li>
-                    <li><a id="FR">French</a></li>
-                    <li><a id="GE">Genetics &amp; Microbiology</a></li>
-                    <li><a id="GG">Geography</a></li>
-                    <li><a id="GL">Geology</a></li>
-                    <li><a id="GR">German</a></li>
-                    <li><a id="HA">History of Art</a></li>
-                    <li><a id="HE">Religions &amp; Theology</a></li>
-                    <li><a id="HH">Histories &amp; Humanitaries</a></li>
-                    <li><a id="HI">History</a></li>
-                    <li><a id="IE">Imagining Ireland</a></li>
-                    <li><a id="IR">Irish Studies</a></li>
-                    <li><a id="IT">Italian</a></li>
-                    <li><a id="LA">Law</a></li>
-                    <li><a id="LI">Linguistics</a></li>
-                    <li><a id="LY">Loyola Institute</a></li>
-                    <li><a id="MA">Mathematics</a></li>
-                    <li><a id="MD">Medicine</a></li>
-                    <li><a id="ME">Mechanical &amp; Manufactural Engineering</a></li>
-                    <li><a id="MI">Microbiology</a></li>
-                    <li><a id="MU">Music</a></li>
-                    <li><a id="MW">Midwifery</a></li>
-                    <li><a id="NM">Near &amp; Middle Eastern Studies</a></li>
-                    <li><a id="NU">Nursing</a></li>
-                    <li><a id="OT">Occupational Therapy</a></li>
-                    <li><a id="PG">Physiology</a></li>
-                    <li><a id="PH">Pharmacy</a></li>
-                    <li><a id="PI">Phisiology</a></li>
-                    <li><a id="PL">Polish</a></li>
-                    <li><a id="PO">Political Science</a></li>
-                    <li><a id="PR">Psychiatry</a></li>
-                    <li><a id="PS">Psychology</a></li>
-                    <li><a id="PT">Physiotherapy</a></li>
-                    <li><a id="PY">Physics</a></li>
-                    <li><a id="RT">Radiotherapy</a></li>
-                    <li><a id="RU">Russian &amp; Slavonic Studies</a></li>
-                    <li><a id="SL">Clinical Speech &amp; Language Studies</a></li>
-                    <li><a id="SO">Sociology</a></li>
-                    <li><a id="SP">Hispanic Studies</a></li>
-                    <li><a id="SS">Social Work &amp; Social Policy</a></li>
-                    <li><a id="ST">Statistics</a></li>
-                    <li><a id="ZO">Zoology</a></li>
-                </ul>`;
-            prepareLinks();
+        var makeYearsClickable = function() {
+            var links = document.getElementsByTagName('li');
+            for(var i=0;i<links.length;i++) {
+                var link = links[i];
+                if(link.parentElement.getAttribute('class') == 'years') {
+                    console.log(link);
+                    link.setAttribute("onclick","showModulesOfYear("+link.getAttribute('id')+");");
+                }
+            }
         }
         
-        var showYearsOfCourse = function(linkElement){
-            var listOfYears = "<ul id=\"years\">";
-            var courseCode = linkElement.getAttribute('id');
+        var showYearsOfCourse = function(listElement){
+            var listOfYears = "<a href=\"courses.html\"><-- All Courses</a><ul class=\"years\">";
+            var courseCode = listElement.getAttribute('id');
             var index = getCourseIndex(csvRows,courseCode);
-            var maxYear = 1;
-            while(csvRows[index][ACADEMIC_YEAR].indexOf(courseCode)==0){
-                //listOfYears += "<li id=\""+csvRows[index][0]+"\">"+csvRows[index][0].charAt(2)+"st year</li>";
-                if(csvRows[index][ACADEMIC_YEAR] > maxYear){
-                    maxYear = csvRows[index][ACADEMIC_YEAR];
+            var currentYear = 0;
+            while(csvRows[index][MODULE_ID].indexOf(courseCode)==0){
+                if(csvRows[index][ACADEMIC_YEAR] > currentYear){
+                    if(csvRows[index][ACADEMIC_YEAR]==1){
+                        listOfYears += "<li id=\""+courseCode+csvRows[index][ACADEMIC_YEAR]+"\">1st year</li>";
+                        currentYear=csvRows[index][ACADEMIC_YEAR];}
+                    else if(csvRows[index][ACADEMIC_YEAR]==2){
+                        listOfYears += "<li id=\""+courseCode+csvRows[index][ACADEMIC_YEAR]+"\">2nd year</li>";
+                        currentYear=csvRows[index][ACADEMIC_YEAR];}
+                    else if(csvRows[index][ACADEMIC_YEAR]==3){
+                        listOfYears += "<li id=\""+courseCode+csvRows[index][ACADEMIC_YEAR]+"\">3rd year</li>";
+                        currentYear=csvRows[index][ACADEMIC_YEAR];}
+                    else{
+                        listOfYears += "<li id=\""+courseCode+csvRows[index][ACADEMIC_YEAR]+"\">"+csvRows[index][ACADEMIC_YEAR]+"th year</li>";
+                        currentYear=csvRows[index][ACADEMIC_YEAR];}
                 }
                 index++;
             }
-            for(var i=1;i<maxYear;i++){
-                switch(i){
-                    case 1: listOfYears += "<li id=1stYear>"+i+"st year</li>";
-                    case 2: listOfYears += "<li id=2ndYear>"+i+"nd year</li>";
-                    case 3: listOfYears += "<li id=3rdYear>"+i+"nd year</li>";
-                    default: listOfYears += "<li id=\""+i+"thYear\">"+i+"th year</li>";
-                }
-            }
-            listOfYears += "</ul>"
+            listOfYears += "</ul><div id=\"modulesOfTheYear\"></div>"
 
             var options = document.getElementById("options");
             options.innerHTML = listOfYears;
+            makeYearsClickable();
+        }
+        
+        var showModulesOfYear = function(listElement){
+            var listOfModules = "<ul id=\"modules\">";
+            var courseCode = listElement.getAttribute('id').substring(0,2);
+            var yearOfCourse = listElement.getAttribute('id').substring(2,3);
+            var index = getCourseIndex(csvRows,courseCode);
+            console.log("The first of that module is: "+csvRows[index][MODULE_NAME]+"Year of coures is: "+yearOfCourse);
+            if(csvRows[index][ACADEMIC_YEAR]==yearOfCourse){ listOfModules += "<li id=\""+csvRows[index][MODULE_ID]+"\">"+csvRows[index][MODULE_NAME]+"</li>"; }
+            var lastModuleAdded = csvRows[index][MODULE_ID];
+            index++;
+            while(csvRows[index][MODULE_ID].indexOf(courseCode)==0){
+                if(csvRows[index][MODULE_ID]!=lastModuleAdded && csvRows[index][ACADEMIC_YEAR]==yearOfCourse){
+                    listOfModules += "<li id=\""+csvRows[index][MODULE_ID]+"\">"+csvRows[index][MODULE_NAME]+"</li>"
+                    lastModuleAdded = csvRows[index][MODULE_ID];
+                }
+                index++;
+            }
+            listOfModules += "</ul>"
+
+            var modulesOfTheYear = document.getElementById("modulesOfTheYear");
+            modulesOfTheYear.innerHTML = listOfModules;
         }
         
         
@@ -158,7 +194,6 @@
             while(low<=high){
                 centre = Math.round((low+high)/2);
                 courseCodeAtCentre = data[centre][0].substring(0,2);
-                console.log('The courseCodeAtCentre is: '+courseCodeAtCentre);
                 if(courseCodeAtCentre==courseCode){
                     return centre;
                 }
