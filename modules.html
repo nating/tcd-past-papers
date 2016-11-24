@@ -226,6 +226,9 @@
                     /*if(csvRows[index][SEARCH_VALUE]==searchValue && csvRows[index][ACADEMIC_YEAR]==currentYear){
                         listOfYears += "<li id=\""+csvRows[index][MODULE_ID]+searchValue+"\">"+csvRows[index][MODULE_NAME]+csvRows[index][ACADEMIC_YEAR]+"</li>";
                     }*/
+                    if(csvRows[index][MODULE_ID]=="CS4LL5"){
+                        console.log(csvRows[index][MODULE_ID]+" "+csvRows[index][ACADEMIC_YEAR]+" "+csvRows[index][SEARCH_VALUE]);
+                    }
                     
                     if(csvRows[index][ACADEMIC_YEAR]==currentYear && csvRows[index][SEARCH_VALUE]==searchValue){
                         if(csvRows[index][ACADEMIC_YEAR]==1){
@@ -269,7 +272,7 @@
                         }
                     }
                     if(!alreadyAdded){
-                        listOfModules += "<li id=\""+csvRows[i][MODULE_ID]+"\">"+csvRows[i][MODULE_NAME]+"</li>";
+                        listOfModules += "<li id=\""+csvRows[i][MODULE_ID]+"\">"+csvRows[i][MODULE_ID]+" "+csvRows[i][MODULE_NAME]+"</li>";
                         addedModules.push(csvRows[i][MODULE_ID]);
                     }
                 }
