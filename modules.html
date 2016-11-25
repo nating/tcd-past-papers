@@ -18,7 +18,7 @@
     <script>
         
         var MODULE_ID = 0;
-        var YEAR_OF_COURSE = 1;
+        var YEAR = 1;
         var MODULE_NAME = 2;
         var LINK = 3;
         var ACADEMIC_YEAR = 4;
@@ -34,13 +34,13 @@
         //Code run once the page is loaded.
         var startUp = function(){
             parseData("https://raw.githubusercontent.com/nating/examinating/master/PastPapers.csv", updateData);
-            showAllCourses();
         }
         parseData = function(url, callBack) {
             Papa.parse(url,{download: true, dynamicTyping: true, complete: function(results){ callBack(results.data);} });
         }
         updateData = function(parsedFile) {
             csvRows = parsedFile;
+            showAllCourses();
         }
         
         var showAllCourses = function(){
@@ -195,12 +195,30 @@
         
         var makeCoursesClickable = function() {
             var links = document.getElementsByTagName('li');
+            var howLongEachCourseHasBeenAround = "";
             for(var i=0;i<links.length;i++) {
                 var link = links[i];
                 if(link.parentElement.getAttribute('class') == 'courses') {
                     link.setAttribute("onclick","showYearsOfCourse("+link.getAttribute('id')+");");
+                    link.innerHTML += "  "+findHowLongCourseHasBeenAround(link.getAttribute('id')+'\n');
                 }
             }
+            //console.log(howLongEachCourseHasBeenAround);
+        }
+        
+        var findHowLongCourseHasBeenAround = function(searchValue){
+            var lowestYear = 3000;
+            var highestYear = 0;
+            for(var i=0;i<csvRows.length;i++){
+                if(csvRows[i][SEARCH_VALUE]==searchValue){
+                    highestYear = highestYear>csvRows[i][YEAR]? highestYear : csvRows[i][YEAR];
+                    lowestYear = lowestYear<csvRows[i][YEAR]? lowestYear : csvRows[i][YEAR];
+                }
+            }
+            if(highestYear!=0 && lowestYear!= 3000){
+                return "("+lowestYear+"-"+highestYear+")";
+            }
+            return "(There are no papers for this course)";
         }
         
         var makeYearsClickable = function() {
@@ -256,7 +274,7 @@
             makeYearsClickable();
         }
         
-        //Needs to be edited to show all modules in a year of a _course_ not a _school_
+        //Takes a String with a yearOfCourse+SearchValue and adds a list to the "modulesOfTheYear" element
         var showModulesOfYear = function(listElement){
             var listOfModules = "<ul id=\"modules\">";
             listElementString = ""+listElement;
@@ -278,16 +296,6 @@
                     }
                 }
             }
-            /*if(csvRows[index][ACADEMIC_YEAR]==yearOfCourse){ listOfModules += "<li id=\""+csvRows[index][MODULE_ID]+"\">"+csvRows[index][MODULE_NAME]+"</li>"; }
-            var lastModuleAdded = csvRows[index][MODULE_ID];
-            index++;
-            while(csvRows[index][MODULE_ID].indexOf(courseCode)==0){
-                if(csvRows[index][MODULE_ID]!=lastModuleAdded && csvRows[index][ACADEMIC_YEAR]==yearOfCourse){
-                    listOfModules += "<li id=\""+csvRows[index][MODULE_ID]+"\">"+csvRows[index][MODULE_NAME]+"</li>"
-                    lastModuleAdded = csvRows[index][MODULE_ID];
-                }
-                index++;
-            }*/
             listOfModules += "</ul>"
 
             var modulesOfTheYear = document.getElementById("modulesOfTheYear");
