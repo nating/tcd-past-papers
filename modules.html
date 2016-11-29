@@ -283,7 +283,9 @@
             var searchValue = listElementString.substring(1,listElementString.length);
             /*var index = getModuleCodeIndex(csvRows,searchValue);*/
             for(var i=0;i<csvRows.length;i++){
+                if(csvRows[i][MODULE_ID]=="CS2041"){console.log("a yearOfCourse:"+yearOfCourse+" csvRows[i][YEAR]:"+csvRows[i][ACADEMIC_YEAR]+" searchValue:"+searchValue+" csvRows[i][SEARCH_VALUE]:"+csvRows[i][SEARCH_VALUE]);}
                 if(csvRows[i][SEARCH_VALUE]==searchValue && csvRows[i][ACADEMIC_YEAR]==yearOfCourse){
+                    if(csvRows[i][MODULE_ID]=="CS2041"){console.log("b");}
                     var alreadyAdded = false;
                     for(var j=0;j<addedModules.length;j++){
                         if(addedModules[j]==csvRows[i][MODULE_ID]){
@@ -291,6 +293,7 @@
                         }
                     }
                     if(!alreadyAdded){
+                        if(csvRows[i][MODULE_ID]=="CS2041"){console.log("c");}
                         listOfModules += "<li id=\""+csvRows[i][MODULE_ID]+"\">"+csvRows[i][MODULE_ID]+" "+csvRows[i][MODULE_NAME]+"</li>";
                         addedModules.push(csvRows[i][MODULE_ID]);
                     }
