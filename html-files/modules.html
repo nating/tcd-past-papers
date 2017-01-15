@@ -33,7 +33,7 @@
         
         //Code run once the page is loaded.
         var startUp = function(){
-            parseData("https://raw.githubusercontent.com/nating/examinating/master/past-papers/AnnualPapers.csv", updateData);
+            parseData("https://github.com/nating/examinating/blob/master/past-papers/AnnualPapers.csv?raw=true", updateData);
         }
         parseData = function(url, callBack) {
             Papa.parse(url,{download: true, dynamicTyping: true, complete: function(results){ callBack(results.data);} });
@@ -367,14 +367,14 @@
             var modules = modulesString.split(',');
             //New User
             if(modulesString==""){
-                document.cookie = "lastActiveModule="+moduleCode+"; "
-                document.cookie = "modules="+moduleCode+"; ";
+                document.cookie = "lastActiveModule="+moduleCode+";  path=/; "
+                document.cookie = "modules="+moduleCode+";  path=/; ";
                 console.log("1 The new cookie is: "+document.cookie+".");
             }
             //User removing only checked module
             else if(moduleCode==modules[0] && modules.length==1){
-                document.cookie = "lastActiveModule=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-                document.cookie = "modules=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+                document.cookie = "lastActiveModule=;  path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+                document.cookie = "modules=;  path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
                 console.log("2 The new cookie is: "+document.cookie+".");
             }
             else{
@@ -393,21 +393,21 @@
                 }
                 if(alreadyPresent==false){
                     modulesList += moduleCode;
-                    document.cookie = "lastActiveModule="+moduleCode+"; "
-                    document.cookie = "modules="+modulesList+"; ";
+                    document.cookie = "lastActiveModule="+moduleCode+";  path=/; "
+                    document.cookie = "modules="+modulesList+";  path=/; ";
                     console.log("3 The new cookie is: "+document.cookie+".");
                 }
                 else{
                     modulesList = modulesList.substring(0, modulesList.length - 1);
                     var last = getCookie("lastActiveModule");
                     if(last==moduleCode){
-                        document.cookie = "lastActiveModule="+modules[0]+"; "
-                        document.cookie = "modules="+modulesList+"; ";
+                        document.cookie = "lastActiveModule="+modules[0]+";  path=/; "
+                        document.cookie = "modules="+modulesList+";  path=/; ";
                         console.log("4 The new cookie is: "+document.cookie+".");
                     }
                     else{
-                        document.cookie = "lastActiveModule="+last+"; "
-                        document.cookie = "modules="+modulesList+"; ";
+                        document.cookie = "lastActiveModule="+last+";  path=/; "
+                        document.cookie = "modules="+modulesList+";  path=/; ";
                         console.log("5 The new cookie is: "+document.cookie+".");
                     }
                 }

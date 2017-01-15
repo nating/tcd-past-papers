@@ -12,13 +12,9 @@
             <li><a  href="about.html" id="About">About</a></li>
         </ul>
     </div>
-    <div>
-      <input type="checkbox" id="Maths" onclick='setUserDetails("MA2111");'> I like Maths<br>
-      <input type="checkbox" id="Science" onclick='setUserDetails("ST2641");'> I like Science<br>
+    <div id="modulesBox">
     </div>
-    <div id="modulesBox" onload="displayModulesBox()">
-    </div>
-    <div id="yearsBox" onload="displayYears()">
+    <div id="yearsBox">
     </div>
     <script>
         
@@ -44,7 +40,7 @@
               
         //Code run once the page is loaded.
         var startUp = function(){
-            parseData("https://raw.githubusercontent.com/nating/examinating/master/past-papers/AnnualPapers.csv", updateData);
+            parseData("https://github.com/nating/examinating/blob/master/past-papers/AnnualPapers.csv?raw=true", updateData);
         }
         parseData = function(url, callBack) {
             Papa.parse(url,{download: true, dynamicTyping: true, complete: function(results){ callBack(results.data);} });
@@ -52,17 +48,9 @@
         updateData = function(parsedFile) {
             data = parsedFile;
             console.log("The saved cookie was: "+document.cookie+".");
-            var modules = document.getElementById("MyModules");
-            modules.innerHTML = data.length;
             displayModulesBox(data);
             var lastActiveModule = getCookie("lastActiveModule");
             displayYears(data,lastActiveModule);
-            testPDFSearch("https://www.tcd.ie/academicregistry/exams/assets/local/past-papers2016/CS/CS1003-2.PDF"+"Computer Science");
-        }
-        
-        //Searches a pdf for a certain word and displays it in a div at the end of the body.
-        var testPDFSearch = function(jkvhvlu){
-            
         }
         
         //Display the appropriate content for the user in the modulesBox.
@@ -81,9 +69,11 @@
             }
             else{
                 var modules = modulesString.split(',');
+                console.log("the modules are:"+modules+".");
                 var htmlListOfModuleNames = "<ul>"
-                for(var i=0;i<modules;i++){
+                for(var i=0;i<modules.length;i++){
                     var index = getLinkIndex(data,modules[i]);
+                    console.log(index);
                     htmlListOfModuleNames += "<li id=\""+data[index][0]+"\">"+data[index][0]+" "+data[index][2]+"</li>";
                 }
                 htmlListOfModuleNames += "</ul>"
@@ -179,8 +169,8 @@
             }
             //User removing only checked module
             else if(moduleCode==modules[0] && modules.length==1){
-                document.cookie = "lastActiveModule=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-                document.cookie = "modules=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+                document.cookie = "lastActiveModule=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+                document.cookie = "modules=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
                 console.log("2 The new cookie is: "+document.cookie+".");
             }
             else{
@@ -199,21 +189,21 @@
                 }
                 if(alreadyPresent==false){
                     modulesList += moduleCode;
-                    document.cookie = "lastActiveModule="+moduleCode+"; "
-                    document.cookie = "modules="+modulesList+"; ";
+                    document.cookie = "lastActiveModule="+moduleCode+";  path=/; "
+                    document.cookie = "modules="+modulesList+";  path=/; ";
                     console.log("3 The new cookie is: "+document.cookie+".");
                 }
                 else{
                     modulesList = modulesList.substring(0, modulesList.length - 1);
                     var last = getCookie("lastActiveModule");
                     if(last==moduleCode){
-                        document.cookie = "lastActiveModule="+modules[0]+"; "
-                        document.cookie = "modules="+modulesList+"; ";
+                        document.cookie = "lastActiveModule="+modules[0]+";  path=/; "
+                        document.cookie = "modules="+modulesList+";  path=/; ";
                         console.log("4 The new cookie is: "+document.cookie+".");
                     }
                     else{
-                        document.cookie = "lastActiveModule="+last+"; "
-                        document.cookie = "modules="+modulesList+"; ";
+                        document.cookie = "lastActiveModule="+last+";  path=/; "
+                        document.cookie = "modules="+modulesList+";  path=/; ";
                         console.log("5 The new cookie is: "+document.cookie+".");
                     }
                 }
