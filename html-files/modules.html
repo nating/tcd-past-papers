@@ -2,7 +2,7 @@
 <head>
     <meta charset="utf-8">
     <title>Examinating - Courses</title>
-    <script src="https://raw.githubusercontent.com/mholt/PapaParse/master/papaparse.js"></script>
+    <script src="https://rawgit.com/mholt/PapaParse/master/papaparse.js"></script>
 </head>
 <body>
     <div>
@@ -363,18 +363,18 @@
         //Set the user details in the Cookie. The passed moduleCode is added or removed from the cookie.
         var setUserDetails = function(moduleCode){
             console.log("Setting now. What was clicked was: "+moduleCode);
-            var modulesString = getCookie("modules");
+            var modulesString = getCookie("modules1");
             var modules = modulesString.split(',');
             //New User
             if(modulesString==""){
-                document.cookie = "lastActiveModule="+moduleCode+";  path=/; "
-                document.cookie = "modules="+moduleCode+";  path=/; ";
+                document.cookie = "lastActiveModule1="+moduleCode+";  path=/; "
+                document.cookie = "modules1="+moduleCode+";  path=/; ";
                 console.log("1 The new cookie is: "+document.cookie+".");
             }
             //User removing only checked module
             else if(moduleCode==modules[0] && modules.length==1){
-                document.cookie = "lastActiveModule=;  path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-                document.cookie = "modules=;  path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+                document.cookie = "lastActiveModule1=;  path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+                document.cookie = "modules1=;  path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
                 console.log("2 The new cookie is: "+document.cookie+".");
             }
             else{
@@ -393,21 +393,21 @@
                 }
                 if(alreadyPresent==false){
                     modulesList += moduleCode;
-                    document.cookie = "lastActiveModule="+moduleCode+";  path=/; "
-                    document.cookie = "modules="+modulesList+";  path=/; ";
+                    document.cookie = "lastActiveModule1="+moduleCode+";  path=/; "
+                    document.cookie = "modules1="+modulesList+";  path=/; ";
                     console.log("3 The new cookie is: "+document.cookie+".");
                 }
                 else{
                     modulesList = modulesList.substring(0, modulesList.length - 1);
-                    var last = getCookie("lastActiveModule");
+                    var last = getCookie("lastActiveModule1");
                     if(last==moduleCode){
-                        document.cookie = "lastActiveModule="+modules[0]+";  path=/; "
-                        document.cookie = "modules="+modulesList+";  path=/; ";
+                        document.cookie = "lastActiveModule1="+modules[0]+";  path=/; "
+                        document.cookie = "modules1="+modulesList+";  path=/; ";
                         console.log("4 The new cookie is: "+document.cookie+".");
                     }
                     else{
-                        document.cookie = "lastActiveModule="+last+";  path=/; "
-                        document.cookie = "modules="+modulesList+";  path=/; ";
+                        document.cookie = "lastActiveModule1="+last+";  path=/; "
+                        document.cookie = "modules1="+modulesList+";  path=/; ";
                         console.log("5 The new cookie is: "+document.cookie+".");
                     }
                 }
