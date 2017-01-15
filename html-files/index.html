@@ -44,7 +44,7 @@
               
         //Code run once the page is loaded.
         var startUp = function(){
-            parseData("https://raw.githubusercontent.com/nating/examinating/master/PastPapers.csv", updateData);
+            parseData("https://raw.githubusercontent.com/nating/examinating/master/past-papers/AnnualPapers.csv", updateData);
         }
         parseData = function(url, callBack) {
             Papa.parse(url,{download: true, dynamicTyping: true, complete: function(results){ callBack(results.data);} });
