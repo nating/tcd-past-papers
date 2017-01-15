@@ -283,9 +283,7 @@
             var searchValue = listElementString.substring(1,listElementString.length);
             /*var index = getModuleCodeIndex(csvRows,searchValue);*/
             for(var i=0;i<csvRows.length;i++){
-                if(csvRows[i][MODULE_ID]=="CS2041"){console.log("a yearOfCourse:"+yearOfCourse+" csvRows[i][YEAR]:"+csvRows[i][ACADEMIC_YEAR]+" searchValue:"+searchValue+" csvRows[i][SEARCH_VALUE]:"+csvRows[i][SEARCH_VALUE]);}
                 if(csvRows[i][SEARCH_VALUE]==searchValue && csvRows[i][ACADEMIC_YEAR]==yearOfCourse){
-                    if(csvRows[i][MODULE_ID]=="CS2041"){console.log("b");}
                     var alreadyAdded = false;
                     for(var j=0;j<addedModules.length;j++){
                         if(addedModules[j]==csvRows[i][MODULE_ID]){
@@ -293,8 +291,7 @@
                         }
                     }
                     if(!alreadyAdded){
-                        if(csvRows[i][MODULE_ID]=="CS2041"){console.log("c");}
-                        listOfModules += "<li id=\""+csvRows[i][MODULE_ID]+"\">"+csvRows[i][MODULE_ID]+" "+csvRows[i][MODULE_NAME]+"</li>";
+                        listOfModules += "<input type=\"checkbox\" id=\""+csvRows[i][MODULE_ID]+"\" onclick='setUserDetails(\""+csvRows[i][MODULE_ID]+"\");'>"+csvRows[i][MODULE_ID]+" "+csvRows[i][MODULE_NAME]+"</input><br>";
                         addedModules.push(csvRows[i][MODULE_ID]);
                     }
                 }
@@ -362,6 +359,79 @@
             console.log("No link was found for the searchValue: "+searchValue);
             return -1;
         };
+
+        //Set the user details in the Cookie. The passed moduleCode is added or removed from the cookie.
+        var setUserDetails = function(moduleCode){
+            console.log("Setting now. What was clicked was: "+moduleCode);
+            var modulesString = getCookie("modules");
+            var modules = modulesString.split(',');
+            //New User
+            if(modulesString==""){
+                document.cookie = "lastActiveModule="+moduleCode+"; "
+                document.cookie = "modules="+moduleCode+"; ";
+                console.log("1 The new cookie is: "+document.cookie+".");
+            }
+            //User removing only checked module
+            else if(moduleCode==modules[0] && modules.length==1){
+                document.cookie = "lastActiveModule=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+                document.cookie = "modules=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+                console.log("2 The new cookie is: "+document.cookie+".");
+            }
+            else{
+                var modulesList = "";
+                var alreadyPresent = false;
+                for(var i=0;i<modules.length;i++){
+                    console.log("Checking that "+modules[i]+" is not "+moduleCode+".");
+                    if(modules[i]==moduleCode){
+                        console.log("It was.");
+                        alreadyPresent = true;
+                    }
+                    else{
+                        console.log("Adding "+modules[i]+" to the modulesList.");
+                        modulesList += modules[i]+",";
+                    }
+                }
+                if(alreadyPresent==false){
+                    modulesList += moduleCode;
+                    document.cookie = "lastActiveModule="+moduleCode+"; "
+                    document.cookie = "modules="+modulesList+"; ";
+                    console.log("3 The new cookie is: "+document.cookie+".");
+                }
+                else{
+                    modulesList = modulesList.substring(0, modulesList.length - 1);
+                    var last = getCookie("lastActiveModule");
+                    if(last==moduleCode){
+                        document.cookie = "lastActiveModule="+modules[0]+"; "
+                        document.cookie = "modules="+modulesList+"; ";
+                        console.log("4 The new cookie is: "+document.cookie+".");
+                    }
+                    else{
+                        document.cookie = "lastActiveModule="+last+"; "
+                        document.cookie = "modules="+modulesList+"; ";
+                        console.log("5 The new cookie is: "+document.cookie+".");
+                    }
+                }
+            }
+            return 1;
+        };
+        
+        //Returns the value of a Cookie
+        var getCookie = function(cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for(var i = 0; i <ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length,c.length);
+                }
+            }
+            return "";
+        };
+
+        //  Here are all the different schools:
         
                     /*<li id="AN">AN Anatomy</li>
                     <li id="AP">AP Foundation Course for Higher Education</li>
