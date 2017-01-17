@@ -4,7 +4,7 @@
     <title>Examinating - Courses</title>
     <script src="https://rawgit.com/mholt/PapaParse/master/papaparse.js"></script>
     
-    <link rel="stylesheet" href="/Users/GeoffreyNatin/Desktop/examinating.css">
+    <link rel="stylesheet" href="examinating.css">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -30,7 +30,8 @@
         Waiting for Files to be read.
     </div>
     <script>
-        
+        var clearCookies = function(){document.cookie = "expires=Thu, 01 Jan 1970 00:00:00 UTC";}
+        //
         var MODULE_ID = 0;
         var YEAR = 1;
         var MODULE_NAME = 2;
@@ -47,7 +48,7 @@
         
         //Code run once the page is loaded.
         var startUp = function(){
-            parseData("https://github.com/nating/examinating/blob/master/past-papers/AnnualPapers.csv?raw=true", updateData);
+            parseData("https://raw.githubusercontent.com/nating/examinating/master/past-papers/AnnualPapers.csv", updateData);
         }
         parseData = function(url, callBack) {
             Papa.parse(url,{download: true, dynamicTyping: true, complete: function(results){ callBack(results.data);} });
@@ -293,6 +294,8 @@
             var listOfModules = "<ul id=\"modules\">";
             listElementString = ""+listElement;
             var addedModules = [];
+            var savedModulesString = getCookie("modules1");
+            var savedModules = savedModulesString.split(',');
             var yearOfCourse = listElementString.substring(0,1);// <------    
             var searchValue = listElementString.substring(1,listElementString.length);
             /*var index = getModuleCodeIndex(csvRows,searchValue);*/
@@ -305,7 +308,18 @@
                         }
                     }
                     if(!alreadyAdded){
+                        var alreadySaved = false;
+                        for(var j=0;j<savedModules.length;j++){
+                            if(savedModules[j]==csvRows[i][MODULE_ID]){
+                                alreadySaved = true; break;
+                            }
+                        }
+                        if(alreadySaved){
+                        listOfModules += "<input type=\"checkbox\" checked id=\""+csvRows[i][MODULE_ID]+"\" onclick='setUserDetails(\""+csvRows[i][MODULE_ID]+"\");'>"+csvRows[i][MODULE_ID]+" "+csvRows[i][MODULE_NAME]+"</input><br>";
+                        }
+                        else{
                         listOfModules += "<input type=\"checkbox\" id=\""+csvRows[i][MODULE_ID]+"\" onclick='setUserDetails(\""+csvRows[i][MODULE_ID]+"\");'>"+csvRows[i][MODULE_ID]+" "+csvRows[i][MODULE_NAME]+"</input><br>";
+                        }
                         addedModules.push(csvRows[i][MODULE_ID]);
                     }
                 }
