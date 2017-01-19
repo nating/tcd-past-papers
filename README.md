@@ -1,4 +1,4 @@
-# Examinating
+# Examinating [![Build Status](https://travis-ci.org/nating/examinating.png?branch=master)](https://travis-ci.org/nating/examinating)
 A Website for students at Trinity College Dublin to more easily navigate the past examination papers.
 
 It can be found at: https://nating.github.io/examinating/
