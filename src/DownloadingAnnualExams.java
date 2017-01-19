@@ -1,11 +1,22 @@
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
+//For CSV Writing
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+//For JSON writing
+import org.json.JSONObject;
+
+
+
+//import com.fasterxml.jackson.core.JsonGenerationException;
+//import com.fasterxml.jackson.core.JsonMappingException;
+//import com.fasterxml.jackson.core.ObjectMapper;
 
 public class DownloadingAnnualExams {
 	
@@ -25,7 +36,8 @@ public class DownloadingAnnualExams {
         pastPapers = addOldAnnualPapers(pastPapers);
         pastPapers = addNewAnnualPapers(pastPapers);
         
-        writePapersToCSV(pastPapers,"/Users/GeoffreyNatin/Desktop/PastPapers.csv");
+        writePapersToCSV(pastPapers,"/Users/GeoffreyNatin/Documents/GithubRepositories/examinating/past-papers/AnnualPapers.csv");
+        writePapersToJSON(pastPapers,"/Users/GeoffreyNatin/Documents/GithubRepositories/examinating/past-papers/AnnualPapers.json");
     }
     
     //Adds all the past papers up and including 2012 to an ArrayList
@@ -39,7 +51,8 @@ public class DownloadingAnnualExams {
 	    				
 	    				//Get web page
 	        	        String url = "http://www.tcd.ie/Local/Exam_Papers/annual_search.cgi?Course="+searchValue+"&Standing="+yearOfCourse+"&acyear="+year+"&annual_search.cgi=Search";
-	        	        Document doc = Jsoup.connect(url).get();
+	        	        Document doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36")
+	        	        	     .get();
 	        	        
 	        	        //If page contains "No papers found" then ignore
 	        	        Elements entireBody = doc.select("body");
@@ -62,18 +75,12 @@ public class DownloadingAnnualExams {
 		        		if(firstModuleID.length()>6){
 		        			firstModuleID = firstModuleID.substring(0, firstModuleID.length()-1);	//Get rid of trailing Paper Number
 		        		}
-		    			firstModuleID = "\""+firstModuleID+"\"";
-				        String firstModuleYear = "\""+ year+"\"";
+				        String firstModuleYear = ""+year;
 				        String firstModuleName = entireBody.get(0).ownText();
-		        		if(firstModuleName.contains("\"")){											//Escape all commas and quotes
-		        			firstModuleName = "\""+firstModuleName.replace('\"',' ')+"\"";
-		        		}
-		        		else{
-		        			firstModuleName = "\""+firstModuleName+"\"";
-		        		}
-				        String firstModuleLink = doc.select("a").attr("href");
+		        		firstModuleName.replace('\"',' ');
+				        String firstModuleLink = "http://www.tcd.ie"+doc.select("a").attr("href");
 				        String firstModuleAcademicYear = ""+ yearOfCourse;
-				        String firstModuleSearchValue = "\""+ searchValue+"\"";	
+				        String firstModuleSearchValue = ""+searchValue;	
 		    			if(!firstModuleID.equals("\"\"")){
 					        PastPaper f = new PastPaper(firstModuleID,firstModuleYear,firstModuleName,firstModuleLink,firstModuleAcademicYear,firstModuleSearchValue);
 			        		pastPapers.add(f);
@@ -96,24 +103,18 @@ public class DownloadingAnnualExams {
 				        		}
 				        		if(moduleID.length()>6){
 				        			moduleID = moduleID.substring(0, moduleID.length()-1);	//Get rid of trailing Paper Number
-				        		}
-				    			moduleID = "\""+moduleID+"\"";								//Escape all commas
-				        		String yearString = "\""+year+"\"";
-				        		String searchValueString = "\""+searchValue+"\"";
+				        		}							
+				        		String yearString = ""+year;						//Escape all commas
+				        		String searchValueString = ""+searchValue;
 				        		String moduleName = p.text();
 				        		String academicYear = ""+yearOfCourse;
-				        		
-
 				        		
 				        		
 				        		moduleName = moduleName.substring(moduleName.indexOf(' ')+1,moduleName.length());	//Get rid of moduleID from moduleName
 				        		if(moduleName.contains("\"")){														//Escape all commas and quotes
-				        			moduleName = "\""+moduleName.replace('\"',' ')+"\"";
+				        			moduleName = moduleName.replace('\"',' ');
 				        		}
-				        		else{
-				        			moduleName = "\""+moduleName+"\"";
-				        		}
-				        		String link = p.child(0).attr("href");
+				        		String link = "http://www.tcd.ie"+p.child(0).attr("href");
 				        		PastPaper n = new PastPaper(moduleID,yearString,moduleName,link,academicYear,searchValueString);
 				        		pastPapers.add(n);
 				    		}
@@ -121,6 +122,7 @@ public class DownloadingAnnualExams {
 	        		}
 	    		}
 			}
+			System.out.println(searchValue);
     	}
 		
 		//Sort the past papers
@@ -134,14 +136,15 @@ public class DownloadingAnnualExams {
     	
     	//Make an ArrayList for the past papers after 2012
         List<PastPaper> newPastPapers = new ArrayList<PastPaper>();
+        List<PastPaper> newCourses = new ArrayList<PastPaper>();
         
         //Add all exam papers from after 2012
         for(int year=2013;year<2017;year++){
 	        String url = "https://www.tcd.ie/academicregistry/exams/past-papers/annual-"+(year-1)%100+""+(year)%100+"/";
-	        Document doc = Jsoup.connect(url).get();
+	        //Document doc = Jsoup.connect(url).get();
         	
-	        //File in = new File("/Users/GeoffreyNatin/Desktop/annual-"+(year-1)%100+""+(year)%100+"/");
-	        //Document doc = Jsoup.parse(in,null);
+	        File in = new File("/Users/GeoffreyNatin/Desktop/Exam_sites/annual-"+(year-1)%100+""+(year)%100+"/");
+	        Document doc = Jsoup.parse(in,null);
 	        
 	        Elements rows = doc.select("tr");
 	        
@@ -170,7 +173,7 @@ public class DownloadingAnnualExams {
 	        		}
 	        		
 	        		//Create past paper
-	        		PastPaper p = new PastPaper("\""+row.child(0).html()+"\"","","","","","");
+	        		PastPaper p = new PastPaper(code.html(),"","","","","");
 	        		
 	        		//Find all courses that this module was a part of
 	        		int index = Collections.binarySearch(pastPapers,p);
@@ -190,21 +193,42 @@ public class DownloadingAnnualExams {
 	        		else{
 	        			
 	        			//Change index to positive from result of Binary Search and subtract 1 if appropriate
-	        			index = (pastPapers.get(Math.abs(index)).compareTo(p) < pastPapers.get(Math.abs(index)-1).compareTo(p))? Math.abs(index) : Math.abs(index) -1;
-	        			
-	        			//If a past paper with the same course is found; give it the same searchValue.
-	        			if(p.compareTo(pastPapers.get(index)) < 6){
+	        			index = Math.abs(index+1);
+	        			int a = index;
+	        			int b = index-1;
+	        			if(index!=0){ 
+	        				index = (Math.abs(p.compareTo(pastPapers.get(b))) < Math.abs(p.compareTo(pastPapers.get(a))))? b : a;
+	        			}
+	        			//	COURSE INFERENCE
+	        			//If a past paper with the same course is found; give it the same searchValue. 
+	        			if(Math.abs(p.compareTo(pastPapers.get(index))) < 6){
 		        			coursesWithModule.add(pastPapers.get(index).getSearchValue());
 		        		}
 	        			//If no past paper is found to be in the same course; then make searchValue unknown.
-		        		else if(p.compareTo(pastPapers.get(index)) < 7){
-	    					coursesWithModule.add("unknown");
+		        		else{
+		        			if(index!=0){
+		        				//System.out.println(code.html()+" closer to:("+pastPapers.get(index).getModuleID()+")"+" didn't match:"+pastPapers.get(b).getModuleID()+" ("+Math.abs(p.compareTo(pastPapers.get(b)))+") or:"+pastPapers.get(a).getModuleID()+" ("+Math.abs(p.compareTo(pastPapers.get(a)))+")");
+		        			}
+		        			else{
+		        				//System.out.println(code.html()+" didn't match:"+pastPapers.get(index).getModuleID()+" ("+Math.abs(p.compareTo(pastPapers.get(a)))+") . And none came before it.");
+			        		}
+		        			coursesWithModule.add("unknown");
+		        			boolean isNewCourse = true;
+		        			for(int i=0;i<newCourses.size();i++){
+		        				if(p.compareTo(newCourses.get(i))<6){
+		        					isNewCourse = false;
+		        				}
+		        			}
+		        			if(isNewCourse){
+			        			newCourses.add(p);
+			        			System.out.println(p.getModuleID());
+		        			}
 		        		}
 	        		}
 	        		
 	        		//Add a past paper for each course that the module is in.
 	        		for(int t=0;t<coursesWithModule.size();t++){
-		    			p = new PastPaper("\""+code.html()+"\"",""+year,"\""+name.html()+"\"",row.child(2).child(0).attr("href"),""+code.html().charAt(2),coursesWithModule.get(t));
+		    			p = new PastPaper(code.html(),""+year,name.html(),url+row.child(2).child(0).attr("href"),""+code.html().charAt(2),coursesWithModule.get(t));
 		        		newPastPapers.add(p);
 	        		}
 	        		
@@ -221,7 +245,7 @@ public class DownloadingAnnualExams {
 	        		}
 	        		
 	        		//Create a past paper
-	        		PastPaper p = new PastPaper("\""+lastModuleID+"\"","","","","","");
+	        		PastPaper p = new PastPaper(lastModuleID,"","","","","");
 	        		
 	        		//Find all the courses that contain the module
 	        		int index = Collections.binarySearch(pastPapers,p);
@@ -254,7 +278,7 @@ public class DownloadingAnnualExams {
 	        		
 	        		//Add a past paper for each course the module belongs to.
 	        		for(int t=0;t<coursesWithModule.size();t++){
-		        		p = new PastPaper("\""+lastModuleID+"\"",""+year,"\""+name.html()+"\"",row.child(1).child(0).attr("href"),""+lastModuleID.charAt(2),coursesWithModule.get(t));
+		        		p = new PastPaper(lastModuleID,""+year,name.html(),row.child(1).child(0).attr("href"),""+lastModuleID.charAt(2),coursesWithModule.get(t));
 		            	newPastPapers.add(p);
 	        		}
 	    		}
@@ -296,6 +320,38 @@ public class DownloadingAnnualExams {
              	e.printStackTrace();
              }
          }
+    }
+    
+    //Writes an ArrayList of past papers to a JSON file
+    private static void writePapersToJSON(List<PastPaper> pastPapers,String json){
+    	
+     
+    		// try-with-resources statement based on post comment below :)
+    		try (FileWriter file = new FileWriter(json)) {
+    			file.write("[");
+    			for(int i=0;i<pastPapers.size();i++){
+    	    		PastPaper p = pastPapers.get(i);
+    	    		JSONObject obj = new JSONObject();
+    	    		obj.put("moduleID", p.getModuleID());
+    	    		obj.put("yearOfCourse", p.getYearOfCourse());
+    	    		obj.put("moduleName", p.getModuleName());
+    	    		obj.put("link", p.getLink());
+    	    		obj.put("academicYear", p.getAcademicYear());
+    	    		obj.put("searchValue", p.getSearchValue());
+    	    		
+    	    		if(i!=pastPapers.size()-1){
+    	    			file.write(obj.toString()+",");
+    	    		}
+    	    		else{
+    	    			file.write(obj.toString());
+    	    		}
+    			}
+    			file.write("]");
+    		} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	
     }
 
     //Returns the course name that corresponds to the search value argument for annual exams

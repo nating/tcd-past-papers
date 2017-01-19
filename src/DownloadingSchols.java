@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -24,7 +25,7 @@ public class DownloadingSchols {
         pastPapers = addOldScholsPapers(pastPapers);
         pastPapers = addNewScholsPapers(pastPapers);
 
-        writePapersToCSV(pastPapers,"/Users/GeoffreyNatin/Desktop/ScholsPapers.csv");
+        writePapersToCSV(pastPapers,"/Users/GeoffreyNatin/Documents/GithubRepositories/examinating/past-papers/ScholsPapers.csv");
         
     }
     
@@ -63,7 +64,7 @@ public class DownloadingSchols {
 		        			firstModuleName = firstModuleName.replace('\"',' ');
 		        		}
 		        		firstModuleName = "\""+firstModuleName+"\"";
-				        String firstModuleLink = doc.select("a").attr("href");
+				        String firstModuleLink = "https://www.tcd.ie"+doc.select("a").attr("href");
 				        String firstModuleAcademicYear = ""+ SCHOLS_YEAR_OF_COURSE;
 				        String firstModuleSearchValue = "\""+ svWithZeros+"\"";	
 				        
@@ -96,7 +97,7 @@ public class DownloadingSchols {
 				        		else{
 				        			moduleName = "\""+moduleName+"\"";
 				        		}
-				        		String link = p.child(0).attr("href");
+				        		String link = "https://www.tcd.ie"+p.child(0).attr("href");
 				        		
 				        		//Add the past paper
 				        		PastPaper n = new PastPaper(moduleID,yearString,moduleName,link,SCHOLS_YEAR_OF_COURSE,searchValueString);
@@ -121,7 +122,11 @@ public class DownloadingSchols {
         	
         	//Download the web page
 	        String url = "https://www.tcd.ie/academicregistry/exams/past-papers/scholarship-"+(year-1)%100+""+(year)%100+"/";
-	        Document doc = Jsoup.connect(url).get();
+	        //Document doc = Jsoup.connect(url).get();
+	        
+	        File f = new File("/Users/GeoffreyNatin/Desktop/Exam_sites/annual-"+(year-1)%100+""+(year)%100+"/");
+	        Document doc = Jsoup.parse(f,null);
+	        
 	        Elements rows = doc.select("tr");
 	        
 	        Element currentCourse = rows.get(0);
@@ -180,7 +185,7 @@ public class DownloadingSchols {
 		        		}
 		        		
 		        		//Add the past paper to the list.
-		        		PastPaper n = new PastPaper("\""+code.html()+"\"","\""+year+"\"","\""+name.html()+"\"",code.attr("href"),SCHOLS_YEAR_OF_COURSE,currentCourseString);
+		        		PastPaper n = new PastPaper("\""+code.html()+"\"","\""+year+"\"","\""+name.html()+"\"",url+code.attr("href"),SCHOLS_YEAR_OF_COURSE,currentCourseString);
 		        		newPastPapers.add(n);
 	        		}
 	    		}

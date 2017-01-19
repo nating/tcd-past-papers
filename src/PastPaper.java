@@ -72,7 +72,7 @@ public class PastPaper implements Comparable<PastPaper> {
 		 *  2.moduleID & searchValue are equal, yearStanding differs.					Different year of the course.						result = 2/-2
 		 *  3.moduleID is equal & searchValue differs.									Same module different course.						result = 3/-3
 		 * 	4.Modules codes differ in the 3rd character.								Different year of the same module.					result = 4/-4		
-		 * 	5.Modules codes have the same first three characters.						They are in the same course.						result = 5/-5
+		 * 	5.Modules codes have the same first four characters.						They are in the same course.						result = 5/-5
 		 * 	6.Modules codes have the same first 2 characters.							They are from the same school.						result = 6/-6
 		 * 	7.Modules don't even have the same course code.								They are quite different.							result = 7/-7
 		 */
@@ -85,8 +85,12 @@ public class PastPaper implements Comparable<PastPaper> {
 		String a1 = academicYear;
 		String a2 = ((PastPaper) p).getAcademicYear();
 		
+		// binary search doesn't find the right thing in the java when comparing.
+		
 		//Negative if first is less.
 		int resultM = m1.substring(0,m1.length()).compareTo(m2.substring(0, m2.length()));
+		
+		if(m1.length()<3 || m2.length()<3){ return -8; }
 		
 		if(resultM==0){
 			int resultS = s1.substring(0,s1.length()).compareTo(s2.substring(0, s2.length()));
@@ -125,7 +129,7 @@ public class PastPaper implements Comparable<PastPaper> {
 			return resultM<0? -4 : 4 ;
 		}
 		//Case 5
-		else if(m1.substring(0,3).equals(m2.substring(0, 3))){
+		else if(m1.substring(0,4).equals(m2.substring(0, 4))){
 			return resultM<0? -5 : 5 ;
 		}
 		//Case 6
