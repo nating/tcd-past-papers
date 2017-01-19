@@ -34,6 +34,19 @@
     </div>
     <script>
 
+        // Set the configuration for your app
+        // TODO: Replace with your project's config object
+        var config = {
+            apiKey: "apiKey",
+            authDomain: "projectId.firebaseapp.com",
+            databaseURL: "https://databaseName.firebaseio.com",
+            storageBucket: "bucket.appspot.com"
+        };
+        firebase.initializeApp(config);
+
+        // Get a reference to the database service
+        var database = firebase.database();
+
         var data;
         
         var MODULE_ID = 0;
@@ -58,7 +71,7 @@
               
         //Code run once the page is loaded.
         var startUp = function(){
-            parseData("https://raw.githubusercontent.com/nating/examinating/master/past-papers/AnnualPapers.csv", updateData);
+            parseData("https://raw.githubusercontent.com/nating/examinating/master/past-papers/AnnualPapers.csv", updateData,console.log);
         }
         parseData = function(url, callBack) {
             Papa.parse(url,{download: true, dynamicTyping: true, complete: function(results){ callBack(results.data);} });

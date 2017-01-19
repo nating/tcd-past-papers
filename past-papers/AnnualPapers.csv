@@ -484,8 +484,8 @@ moduleID,year,moduleName,link,academicYear,searchValue
 "BI3020","2001","Biochemical Techniques (II)",http://www.tcd.ie/Local/Exam_Papers/2001/BI/BI30201.pdf,3,"15"
 "BI3020","2002","Biochemical Techniques (II)",http://www.tcd.ie/Local/Exam_Papers/2002/BI/BI30201.pdf,3,"15"
 "BI3020","2003","Biochemical Techniques 2",http://www.tcd.ie/Local/Exam_Papers/2003/BI/BI30201.pdf,3,"15"
+"BI3020",2015,"RESEARCH SKILLS",https://www.tcd.ie/academicregistry/exams/past-papers/annual-1415/../../assets/local/past-papers2015/BI/BI3020-1.PDF,3,"15"
 "BI3020",2016,"JS BIOCHEMISTRY IMMUNOLOGY &amp; MOLECULAR MEDICINE 5",https://www.tcd.ie/academicregistry/exams/past-papers/annual-1516/../../assets/local/past-papers2016/BI/BI3020-1.PDF,3,"15"
-"BI3020",2015,"RESEARCH SKILLS",https://www.tcd.ie/academicregistry/exams/past-papers/annual-1415/../../assets/local/past-papers2015/BI/BI3020-1.PDF,3,unknown
 "BI3022","2012"," Immunology, Paper 1 ",http://www.tcd.ie/Local/Exam_Papers/2012/XB/XBI30221.pdf,3,"15"
 "BI3024",2013,"FUNDAMENTAL AND APPLIED IMMUNOLOGY",https://www.tcd.ie/academicregistry/exams/past-papers/annual-1213/../../assets/local/past-papers2013/BI/BI30242.pdf,3,unknown
 "BI3025","2002","Biochemical Techniques (I)",http://www.tcd.ie/Local/Exam_Papers/2002/BI/BI30251.pdf,3,"15"
@@ -6490,10 +6490,10 @@ moduleID,year,moduleName,link,academicYear,searchValue
 "CS7030",2015,"NUMERICAL METHODS &amp; ADVANCED MATHEMATICAL MODELLING",https://www.tcd.ie/academicregistry/exams/past-papers/annual-1415/../../assets/local/past-papers2015/Annuals Dec 14/CS7030-2.pdf,7,"769"
 "CS7030",2016,"NUMERICAL METHODS&amp;ADVANCED MATHEMATICAL MODELLING1",https://www.tcd.ie/academicregistry/exams/past-papers/annual-1516/../../assets/local/past-papers2016/CS/CS7030-1.PDF,7,"769"
 "CS7031","2012","Graphics and Console Hardware",http://www.tcd.ie/Local/Exam_Papers/2012/XC/XCS70311.pdf,1,"769"
+"CS7031",2013,"GRAPHICS AND CONSOLE HARDWARE",https://www.tcd.ie/academicregistry/exams/past-papers/annual-1213/../../assets/local/past-papers2013/CS/XCS70311.pdf,7,"769"
 "CS7031",2014,"GRAPHICS AND CONSOLE HARDWARE",https://www.tcd.ie/academicregistry/exams/past-papers/annual-1314/../../assets/local/past-papers2014/CS/CS70312.pdf,7,"769"
 "CS7031",2015,"GRAPHICS AND CONSOLE HARDWARE",https://www.tcd.ie/academicregistry/exams/past-papers/annual-1415/../../assets/local/past-papers2015/Annuals Dec 14/CS7031-2.pdf,7,"769"
 "CS7031",2016,"GRAPHICS AND CONSOLE HARDWARE",https://www.tcd.ie/academicregistry/exams/past-papers/annual-1516/../../assets/local/past-papers2016/CS/CS7031-1.PDF,7,"769"
-"CS7031",2013,"GRAPHICS AND CONSOLE HARDWARE",https://www.tcd.ie/academicregistry/exams/past-papers/annual-1213/../../assets/local/past-papers2013/CS/XCS70311.pdf,7,unknown
 "CS7046","2010","Information Architecture",http://www.tcd.ie/Local/Exam_Papers/2010/XC/XCS70461.pdf,1,"739"
 "CS7046","2012","Information Architecture",http://www.tcd.ie/Local/Exam_Papers/2012/XC/XCS70461.pdf,1,"739"
 "CS7046",2013,"INFORMATION ARCHITECTURE",https://www.tcd.ie/academicregistry/exams/past-papers/annual-1213/../../assets/local/past-papers2013/CS/XCS70461.pdf,7,"739"
