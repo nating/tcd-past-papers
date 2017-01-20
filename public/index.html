@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <title>Examinating</title>
     <script src="https://rawgit.com/mholt/PapaParse/master/papaparse.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/3.6.2/firebase.js"></script>
     
     <link rel="stylesheet" href="examinating.css">
     <!-- Latest compiled and minified CSS -->
@@ -36,11 +38,13 @@
 
         // Set the configuration for your app
         // TODO: Replace with your project's config object
+        // Initialize Firebase
         var config = {
-            apiKey: "apiKey",
-            authDomain: "projectId.firebaseapp.com",
-            databaseURL: "https://databaseName.firebaseio.com",
-            storageBucket: "bucket.appspot.com"
+            apiKey: "AIzaSyB7DdCYWWF1hghR6G8tdLCTMT12L86rLds",
+            authDomain: "tcdpastpapers.firebaseapp.com",
+            databaseURL: "https://tcdpastpapers.firebaseio.com",
+            storageBucket: "tcdpastpapers.appspot.com",
+            messagingSenderId: "856128016051"
         };
         firebase.initializeApp(config);
 
@@ -78,6 +82,12 @@
         }
         updateData = function(parsedFile) {
             console.log("The last Active module was: "+document.cookie+".");
+            console.log("Tira");
+
+            var yeppy = firebase.database().ref().child('9099').child('moduleName');
+
+            console.log(yeppy);
+            console.log("Ma suu");
             data = parsedFile;
             displayModulesBox(data);
             console.log("The last Active module was: "+document.cookie+".");
