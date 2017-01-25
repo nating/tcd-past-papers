@@ -1,7 +1,10 @@
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 
 //For CSV Writing
 import org.jsoup.Jsoup;
@@ -23,8 +26,8 @@ public class TCDPastPapers {
 	private static final int MAX_SEARCH_VAL_ANNUAL = 807;			//807 is the max searchValue value at http://www.tcd.ie/Local/Exam_Papers/summer_nonTSM.html
 	private static final int MAX_YEAR_OF_COURSE = 6;			//6 is the max yearOfCourse value at http://www.tcd.ie/Local/Exam_Papers/summer_nonTSM.html
 	
-	public static final String SCHOLS_YEAR_OF_COURSE = "2";
-	public static final int MAX_SEARCH_VALUE_SCHOLS = 541;		//541 is the max searchValue value at https://www.tcd.ie/Local/Exam_Papers/schols.html
+	private static final String SCHOLS_YEAR_OF_COURSE = "2";
+	private static final int MAX_SEARCH_VALUE_SCHOLS = 541;		//541 is the max searchValue value at https://www.tcd.ie/Local/Exam_Papers/schols.html
 
 	
 	
@@ -42,17 +45,23 @@ public class TCDPastPapers {
         //Sort the past papers.
         //Download the 2013-2016 papers and set searchValues from old versions of the same module from 1998-2012
 
-        List<PastPaper> annualPastPapers = new ArrayList<PastPaper>();
-        List<PastPaper> scholsPastPapers = new ArrayList<PastPaper>();
+        List<PastPaper> annualPastPapers = new ArrayList<>();
+        List<PastPaper> scholsPastPapers = new ArrayList<>();
         
-        //annualPastPapers = addOldAnnualPapers(annualPastPapers);
-        //annualPastPapers = addNewAnnualPapers(annualPastPapers);
+        annualPastPapers = addOldAnnualPapers(annualPastPapers);
+        annualPastPapers = addNewAnnualPapers(annualPastPapers);
 
         scholsPastPapers = addOldScholsPapers(scholsPastPapers);
         scholsPastPapers = addNewScholsPapers(scholsPastPapers);
-        
-        //writePapersToCSV(pastPapers,"/Users/GeoffreyNatin/Desktop/past-papers/AnnualPapers.csv");
-        //writePapersToJSON(pastPapers,"/Users/GeoffreyNatin/Desktop/past-papers/AnnualPapers.json");
+
+
+		writePapersToCSV(annualPastPapers,"/Users/GeoffreyNatin/Documents/Things/AnnualPapers.csv");
+		writePapersToCSV(scholsPastPapers,"/Users/GeoffreyNatin/Documents/Things/ScholsPapers.csv");
+		writePapersToJSON(annualPastPapers,"/Users/GeoffreyNatin/Documents/Things/AnnualPapers.json");
+		writePapersToJSON(scholsPastPapers,"/Users/GeoffreyNatin/Documents/Things/ScholsPapers.json");
+
+		List<PastPaper> ps = extractPapersFromCSV("/Users/GeoffreyNatin/Documents/Things/AnnualPapers.csv");
+		createDatabase(ps);
     }
     
     //Adds all the past papers up and including 2012 to an ArrayList
@@ -81,7 +90,6 @@ public class TCDPastPapers {
 				        	
 				        	//Ignore the <p> explaining number of results.
 				        	if(p.children().size()!=0 && p.text().startsWith("Your")){
-				        		
 				        	}
 				        	else if(p.children().size()!=0 && !p.child(0).html().startsWith("/Local") && !p.child(0).attr("href").startsWith("http://")){
 				    			
@@ -111,10 +119,11 @@ public class TCDPastPapers {
 				        		}
 				        		
 				        		
-				        		String link = "http://www.tcd.ie"+p.child(0).attr("href");
+				        		String link = ("http://www.tcd.ie"+p.child(0).attr("href")).replace(' ','%');
 				        		
 				        		//Add the past paper
 				        		PastPaper n = new PastPaper(moduleID,yearString,moduleName,link,academicYear,searchValueString);
+				        		assert(academicYear.length()<2);
 				        		pastPapers.add(n);
 				    		}
 				        }
@@ -135,8 +144,7 @@ public class TCDPastPapers {
     private static List<PastPaper> addNewAnnualPapers(List<PastPaper> pastPapers) throws IOException{
     	
     	//Make a separate list for new papers that will be added after its creation
-        List<PastPaper> newPastPapers = new ArrayList<PastPaper>();
-        List<PastPaper> newCourses = new ArrayList<PastPaper>();
+        List<PastPaper> newPastPapers = new ArrayList<>();
         
         for(int year=2013;year<2017;year++){
         	
@@ -184,7 +192,7 @@ public class TCDPastPapers {
 	        		
 	        		//Get the index of the moduleID in the old past papers
 	        		int index = Collections.binarySearch(pastPapers,p);
-        			List<String> coursesWithModule = new ArrayList<String>();
+        			List<String> coursesWithModule = new ArrayList<>();
         			
         			//If the moduleID was present in the old past papers
 	        		if(index>=0){
@@ -233,7 +241,7 @@ public class TCDPastPapers {
 	        		
 	        		//Add a past paper for each course that the module is in.
 	        		for(int t=0;t<coursesWithModule.size();t++){
-		    			p = new PastPaper(code.html(),""+year,name.html(),url+row.child(2).child(0).attr("href"),""+code.html().charAt(2),coursesWithModule.get(t));
+		    			p = new PastPaper(code.html(),""+year,name.html(),(url+row.child(2).child(0).attr("href")).replace(' ','%'),""+code.html().charAt(2),coursesWithModule.get(t));
 		        		newPastPapers.add(p);
 	        		}
 	        		
@@ -255,7 +263,7 @@ public class TCDPastPapers {
 	        		
 	        		//Find all the courses that contain the module
 	        		int index = Collections.binarySearch(pastPapers,p);
-        			List<String> coursesWithModule = new ArrayList<String>();
+        			List<String> coursesWithModule = new ArrayList<>();
         			
         			//If the module was present in the old past papers
 	        		if(index>=0){
@@ -301,15 +309,11 @@ public class TCDPastPapers {
 	        		
 	        		//Add a past paper for each course the module belongs to.
 	        		for(int t=0;t<coursesWithModule.size();t++){
-		        		p = new PastPaper(lastModuleID,""+year,name.html(),row.child(1).child(0).attr("href"),""+lastModuleID.charAt(2),coursesWithModule.get(t));
+		        		p = new PastPaper(lastModuleID,""+year,name.html(),(url+row.child(1).child(0).attr("href")).replace(' ','%'),""+lastModuleID.charAt(2),coursesWithModule.get(t));
 		            	newPastPapers.add(p);
 	        		}
 	    		}
 	        }
-        }
-        
-        for(int i=0;i<newCourses.size();i++){
-        	System.out.println(newCourses.get(i).getModuleID());
         }
         
         //Put all the new past papers in with the old past papers.
@@ -348,13 +352,13 @@ public class TCDPastPapers {
 			mID = mID.substring(0, mID.length()-1);	//Get rid of trailing Paper Number
 		}
         String yearString = ""+year;
-        String mName = entireBody.get(0).ownText();
-		mName.replace('\"',' ');
-        String mLink = "http://www.tcd.ie"+d.select("a").attr("href");
+        String mName = entireBody.get(0).ownText().replace('\"',' ');
+        String mLink = ("http://www.tcd.ie"+d.select("a").attr("href")).replace(' ','%');
         String yearOfCourseString = ""+ yearOfCourse;
         String svString = ""+searchValue;	
 		if(!mID.equals("\"\"")){
 	        PastPaper f = new PastPaper(mID,yearString,mName,mLink,yearOfCourseString,svString);
+	        assert(yearOfCourseString.length()<2);
     		p.add(f);
     	}
 		return p;
@@ -366,7 +370,7 @@ public class TCDPastPapers {
     	 FileWriter fileWriter = null;
          try{
          	fileWriter = new FileWriter(csv);
-         	fileWriter.append(FILE_HEADER.toString());
+         	fileWriter.append(FILE_HEADER);
          	fileWriter.append(NEW_LINE_SEPARATOR);
          	
          	for (PastPaper p : pastPapers) {
@@ -389,6 +393,53 @@ public class TCDPastPapers {
          }
     }
     
+    //Extracts papers from a csv into an ArrayList of past papers
+    private static List<PastPaper> extractPapersFromCSV(String csv){
+    	ArrayList<PastPaper> ps = new ArrayList<PastPaper>();
+    	
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ",";
+    	
+    	try {
+
+            br = new BufferedReader(new FileReader(csv));
+            while ((line = br.readLine()) != null) {
+
+                // use comma as separator
+                String[] paper = line.split(cvsSplitBy);
+                
+                
+            	String code = paper[0];
+            	String moduleID = paper[1];
+            	String moduleName = paper[2];
+            	for(int i=3;i<paper.length-3;i++){
+            		moduleName+= ","+paper[i];
+            	}
+            	String academicYear = paper[paper.length-2];
+            	if(!academicYear.matches("\\d") || academicYear.equals("7")){
+            		academicYear = "1";
+            	}
+                PastPaper p = new PastPaper(code,moduleID,moduleName,paper[paper.length-3],academicYear,paper[paper.length-1]);
+                ps.add(p);
+
+            }
+
+        }catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    	
+    	return ps;
+    }
+    
     
     //Writes an ArrayList of past papers to a JSON file
     private static void writePapersToJSON(List<PastPaper> pastPapers,String json){
@@ -401,7 +452,7 @@ public class TCDPastPapers {
     	    		PastPaper p = pastPapers.get(i);
     	    		JSONObject obj = new JSONObject();
     	    		obj.put("moduleID", p.getModuleID());
-    	    		obj.put("yearOfCourse", p.getYearOfCourse());
+    	    		obj.put("yearOfCourse", p.getYear());
     	    		obj.put("moduleName", p.getModuleName());
     	    		obj.put("link", p.getLink());
     	    		obj.put("academicYear", p.getAcademicYear());
@@ -580,7 +631,7 @@ public class TCDPastPapers {
 
         //Cycle through every searchValue
 		for(int searchValue=0;searchValue<MAX_SEARCH_VALUE_SCHOLS;searchValue++){	
-			
+			System.out.println(searchValue);
 			//Add appropriate amount of leading zeros to the searchValue for the url
 			String svWithZeros = searchValue<10? "00"+searchValue : (searchValue<100? "0"+searchValue : ""+searchValue);
 			
@@ -612,7 +663,7 @@ public class TCDPastPapers {
 		        			firstModuleName = firstModuleName.replace('\"',' ');
 		        		}
 		        		
-				        String firstModuleLink = "https://www.tcd.ie"+doc.select("a").attr("href");
+				        String firstModuleLink = ("https://www.tcd.ie"+doc.select("a").attr("href")).replace(' ','%');
 				        String firstModuleAcademicYear = ""+ SCHOLS_YEAR_OF_COURSE;
 				        String firstModuleSearchValue = ""+ svWithZeros;	
 				        
@@ -645,7 +696,7 @@ public class TCDPastPapers {
 				        			moduleName = moduleName.replace('\"',' ');
 				        		}
 				        		
-				        		String link = "https://www.tcd.ie"+p.child(0).attr("href");
+				        		String link = ("https://www.tcd.ie"+p.child(0).attr("href")).replace(' ','%');
 				        		
 				        		//Add the past paper
 				        		PastPaper n = new PastPaper(moduleID,yearString,moduleName,link,SCHOLS_YEAR_OF_COURSE,searchValueString);
@@ -709,7 +760,7 @@ public class TCDPastPapers {
 	        		}
 	        		
 	        		//If the row is a valid past paper row
-	        		if(!code.html().equals("") && !name.html().equals("") && !currentCourse.equals("") && !row.child(1).html().equals("&nbsp;") && code.hasAttr("href")){
+	        		if(!code.html().equals("") && !name.html().equals("") && !currentCourse.html().equals("") && !row.child(1).html().equals("&nbsp;") && code.hasAttr("href")){
 		        		
 	        			
 	        			String currentCourseString = currentCourse.html();
@@ -732,7 +783,7 @@ public class TCDPastPapers {
 		        		}
 		        		
 		        		//Add the past paper to the list.
-		        		PastPaper n = new PastPaper(code.html(),""+year,name.html(),url+code.attr("href"),SCHOLS_YEAR_OF_COURSE,currentCourseString);
+		        		PastPaper n = new PastPaper(code.html(),""+year,name.html(),(url+code.attr("href")).replace(' ','%'),SCHOLS_YEAR_OF_COURSE,currentCourseString);
 		        		newPastPapers.add(n);
 	        		}
 	    		}
@@ -815,6 +866,187 @@ public class TCDPastPapers {
 	    	default: 	courseName = "Course unknown";
     	}
     	return courseName;
-    }    
-    
+    }
+
+
+	//Creates a list of all the valid searchValues
+    private static ArrayList<Integer> createCourseSearchValuesArrayList(){
+		ArrayList<Integer> courseSearchValues = new ArrayList<>();
+		for(int i=0;i<MAX_SEARCH_VAL_ANNUAL;i++){
+			if(!getCourseNameAnnual(i).equals("Course unknown")){
+				courseSearchValues.add(i);
+			}
+		}
+		return courseSearchValues;
+	}
+
+	//Creates a list of unique modules from the PastPaper List
+	private static ArrayList<Module> getUniqueModules(List<PastPaper> papers){
+		ArrayList<Module> modules = new ArrayList<>();
+		for(int i=0;i<papers.size();i++){
+			boolean alreadyPresent = false;
+			String potentialNewModuleCode = papers.get(i).getModuleID();
+			for(int j=0;j<modules.size();j++){
+				if(modules.get(j).getID().equals(potentialNewModuleCode)){
+					alreadyPresent = true;
+					break;
+				}
+			}
+			if(!alreadyPresent){
+				Module m = new Module(papers.get(i).getModuleID(),papers.get(i).getModuleName());
+				modules.add(m);
+			}
+		}
+		return modules;
+	}
+
+	//Creates an ArrayList of courses
+	private static ArrayList<Course> createCourses(ArrayList<Integer> courseSearchValues, int[] yearsOfEachCourse, List<PastPaper> papers){
+		ArrayList<Course> courses = new ArrayList<>();
+		ArrayList<String> alreadyAddedModules = new ArrayList<>();
+		for(int i=0;i<courseSearchValues.size();i++){
+			if(yearsOfEachCourse[i]!=0){
+				Course c = new Course(getCourseNameAnnual(courseSearchValues.get(i)),courseSearchValues.get(i),yearsOfEachCourse[i]);
+				for(int j=0;j<papers.size();j++){
+					if(papers.get(j).getSearchValue().equals(""+courseSearchValues.get(i))){
+						boolean alreadyPresent = false;
+						String potentialNewModule = papers.get(j).getModuleID();
+						for(int k=0;k<alreadyAddedModules.size();k++){
+							if(alreadyAddedModules.get(k).equals(potentialNewModule)){
+								alreadyPresent = true;
+								break;
+							}
+						}
+						if(!alreadyPresent){
+							alreadyAddedModules.add(potentialNewModule);
+							c.addPaper(papers.get(j));
+						}
+					}
+				}
+				alreadyAddedModules.clear();
+				courses.add(c);
+			}
+		}
+		Collections.sort(courses);
+		return courses;
+	}
+
+	//Make a PaperLink for every PastPaper
+	private static List<PaperLink> createPaperLinks(List<PastPaper> papers){
+		List<PaperLink> paperLinks = new ArrayList<>();
+		for (int i = 1; i < papers.size(); i++) {
+			PaperLink l = new PaperLink(papers.get(i));
+			paperLinks.add(l);
+		}
+
+		//Remove duplicates
+		ArrayList<PaperLink> p2 = new ArrayList<>();
+		for (int i = 0; i < paperLinks.size(); i++) {
+			boolean duplicate = false;
+			for (int j = i + 1; j < paperLinks.size(); j++) {
+				if (paperLinks.get(i).equals(paperLinks.get(j))) {
+					duplicate = true;
+				}
+			}
+			if (!duplicate) {
+				p2.add(paperLinks.get(i));
+			}
+		}
+		return p2;
+	}
+
+	//Add the paperLinks to their modules
+	private static ArrayList<Module> addPaperLinksToModules(ArrayList<Module> modules,List<PaperLink> paperLinks) {
+		for (int i = 0; i < paperLinks.size(); i++) {
+			for (int j = 0; j < modules.size(); j++) {
+				if (paperLinks.get(i).getModule().equals(modules.get(j).getID())) {
+					modules.get(j).addPaper(paperLinks.get(i));
+					break;
+				}
+			}
+		}
+		//Sort the paper links in the modules
+		for (int j = 0; j < modules.size(); j++) {
+			Collections.sort(modules.get(j).papers);
+		}
+		return modules;
+	}
+
+	//Make an array corresponding to the courses where each index contains the number of years of the course
+	private static int[] getYearsOfEachCourse(ArrayList<Integer> courseSearchValues, List<PastPaper> papers){
+		int[] yearsOfEachCourse = new int[courseSearchValues.size()];
+		for(int i=0;i<courseSearchValues.size();i++){
+			int maxYear = 0;
+			for(int j=0;j<papers.size();j++){
+				if(papers.get(j).getSearchValue().equals(""+courseSearchValues.get(i)) && Integer.parseInt(papers.get(j).getAcademicYear())>maxYear){
+					maxYear = Integer.parseInt(papers.get(j).getAcademicYear());
+				}
+			}
+			yearsOfEachCourse[i] = maxYear;
+		}
+		return yearsOfEachCourse;
+	}
+
+	//Prints a list of all courses in a JSON format
+	private static void printCoursesList(ArrayList<Course> courses){
+    	System.out.println("Courses{");
+    	for(int i=0;i<courses.size();i++){
+    		System.out.println("\t"+courses.get(i).getName());
+    	}
+    	System.out.println("}");
+	}
+
+	//Prints all the courses in the list in a JSON format
+	private static void printAllCourses(ArrayList<Course> courses){
+		for(int i=0;i<courses.size();i++){
+			System.out.println(courses.get(i).getName()+"{");
+			for(int j=0;j<courses.get(i).years.size();j++){
+				System.out.println("\tyear"+(j+1)+"{");
+				for(int k=0;k<courses.get(i).years.get(j).size();k++){
+					System.out.println("\t\t"+courses.get(i).years.get(j).get(k));
+				}
+				System.out.println("\t}");
+			}
+			System.out.println("}");
+		}
+	}
+
+	private static void printAllModules(ArrayList<Module> modules){
+		System.out.println("Modules{");
+		for(int i=0;i<modules.size();i++){
+			System.out.println("\t"+modules.get(i).getID()+"{");
+			for(int j=0;j<modules.get(i).papers.size();j++){
+				System.out.println("\t\t"+modules.get(i).papers.get(j).getYear()+": "+modules.get(i).papers.get(j).getLink());
+			}
+			System.out.println("\t}");
+		}
+		System.out.println("}");
+	}
+
+	private static void writeDBToJSON(ArrayList<Course> courses, ArrayList<Module> modules){
+
+	}
+
+    //Writes up the data into a json in the format for a NoSQL database.
+    private static void createDatabase(List<PastPaper> papers){
+
+		ArrayList<Integer> courseSearchValues = createCourseSearchValuesArrayList();
+
+    	int[] yearsOfEachCourse = getYearsOfEachCourse(courseSearchValues,papers);
+
+    	ArrayList<Course> courses = createCourses(courseSearchValues,yearsOfEachCourse,papers);
+
+		ArrayList<Module> modules = getUniqueModules(papers);
+
+    	List<PaperLink> paperLinks = createPaperLinks(papers);
+
+    	modules = addPaperLinksToModules(modules,paperLinks);
+
+		printCoursesList(courses);
+		printAllCourses(courses);
+		printAllModules(modules);
+
+		writeDBToJSON(courses,modules);
+
+    }
 }

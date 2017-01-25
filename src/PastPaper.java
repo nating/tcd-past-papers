@@ -1,19 +1,23 @@
 
 public class PastPaper implements Comparable<PastPaper> {
 	
-	private String moduleID, yearOfCourse, moduleName, link, academicYear, searchValue;
+	private String moduleID, year, moduleName, link, academicYear, searchValue;
 	
-	public PastPaper(String moduleID, String yearOfCourse, String moduleName, String link,String academicYear,String searchValue){
+	public PastPaper(String moduleID, String year, String moduleName, String link,String academicYear,String searchValue){
 		this.setModuleID(moduleID);
-		this.setYearOfCourse(yearOfCourse);
+		this.setYear(year);
 		this.setAcademicYear(academicYear);
 		this.setModuleName(moduleName);
 		this.setLink(link);
 		this.setSearchValue(searchValue);
 	}
 	
+	public String toString(){
+		return "ModuleID: "+moduleID+" Year:"+year+" ModuleName:"+moduleName+" Link:"+link+" AcademicYear:"+academicYear+" SearchValue:"+searchValue;
+	}
+	
 	public String CSVFormat(){
-		return ""+moduleID+","+yearOfCourse+","+moduleName+","+link+","+academicYear+","+searchValue+"\n";
+		return ""+moduleID+","+year+","+moduleName+","+link+","+academicYear+","+searchValue+"\n";
 	}
 
 	public String getModuleID() {
@@ -24,12 +28,12 @@ public class PastPaper implements Comparable<PastPaper> {
 		this.moduleID = moduleID;
 	}
 
-	public String getYearOfCourse() {
-		return yearOfCourse;
+	public String getYear() {
+		return year;
 	}
 
-	public void setYearOfCourse(String yearOfCourse) {
-		this.yearOfCourse = yearOfCourse;
+	public void setYear(String year) {
+		this.year = year;
 	}
 	
 	public String getAcademicYear() {
@@ -63,7 +67,8 @@ public class PastPaper implements Comparable<PastPaper> {
 	public void setSearchValue(String searchValue) {
 		this.searchValue = searchValue;
 	}
-
+	
+	
 	@Override
 	public int compareTo(PastPaper p) {
 		/*Three cases:
@@ -80,8 +85,8 @@ public class PastPaper implements Comparable<PastPaper> {
 		String m2 = ((PastPaper) p).getModuleID();
 		String s1 = searchValue;
 		String s2 = ((PastPaper) p).getSearchValue();
-		String y1 = yearOfCourse;
-		String y2 = ((PastPaper) p).getYearOfCourse();
+		String y1 = year;
+		String y2 = ((PastPaper) p).getYear();
 		String a1 = academicYear;
 		String a2 = ((PastPaper) p).getAcademicYear();
 		
