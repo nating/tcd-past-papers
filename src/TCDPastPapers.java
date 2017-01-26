@@ -13,7 +13,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 //For JSON writing
-import org.json.JSONObject;
+import org.json.*;
 
 //import com.fasterxml.jackson.core.JsonGenerationException;
 //import com.fasterxml.jackson.core.JsonMappingException;
@@ -45,23 +45,23 @@ public class TCDPastPapers {
         //Sort the past papers.
         //Download the 2013-2016 papers and set searchValues from old versions of the same module from 1998-2012
 
-        List<PastPaper> annualPastPapers = new ArrayList<>();
-        List<PastPaper> scholsPastPapers = new ArrayList<>();
+        //List<PastPaper> annualPastPapers = new ArrayList<>();
+        //List<PastPaper> scholsPastPapers = new ArrayList<>();
         
-        annualPastPapers = addOldAnnualPapers(annualPastPapers);
-        annualPastPapers = addNewAnnualPapers(annualPastPapers);
+        //annualPastPapers = addOldAnnualPapers(annualPastPapers);
+        //annualPastPapers = addNewAnnualPapers(annualPastPapers);
 
-        scholsPastPapers = addOldScholsPapers(scholsPastPapers);
-        scholsPastPapers = addNewScholsPapers(scholsPastPapers);
+        //scholsPastPapers = addOldScholsPapers(scholsPastPapers);
+        //scholsPastPapers = addNewScholsPapers(scholsPastPapers);
 
 
-		writePapersToCSV(annualPastPapers,"/Users/GeoffreyNatin/Documents/Things/AnnualPapers.csv");
-		writePapersToCSV(scholsPastPapers,"/Users/GeoffreyNatin/Documents/Things/ScholsPapers.csv");
-		writePapersToJSON(annualPastPapers,"/Users/GeoffreyNatin/Documents/Things/AnnualPapers.json");
-		writePapersToJSON(scholsPastPapers,"/Users/GeoffreyNatin/Documents/Things/ScholsPapers.json");
+		//writePapersToCSV(annualPastPapers,"/Users/GeoffreyNatin/Documents/Things/AnnualPapers.csv");
+		//writePapersToCSV(scholsPastPapers,"/Users/GeoffreyNatin/Documents/Things/ScholsPapers.csv");
+		//writePapersToJSON(annualPastPapers,"/Users/GeoffreyNatin/Documents/Things/AnnualPapers.json");
+		//writePapersToJSON(scholsPastPapers,"/Users/GeoffreyNatin/Documents/Things/ScholsPapers.json");
 
 		List<PastPaper> ps = extractPapersFromCSV("/Users/GeoffreyNatin/Documents/Things/AnnualPapers.csv");
-		createDatabase(ps);
+		createDatabase(ps,"/Users/GeoffreyNatin/Documents/Things/database.json");
     }
     
     //Adds all the past papers up and including 2012 to an ArrayList
@@ -880,6 +880,7 @@ public class TCDPastPapers {
 		return courseSearchValues;
 	}
 
+
 	//Creates a list of unique modules from the PastPaper List
 	private static ArrayList<Module> getUniqueModules(List<PastPaper> papers){
 		ArrayList<Module> modules = new ArrayList<>();
@@ -899,6 +900,7 @@ public class TCDPastPapers {
 		}
 		return modules;
 	}
+
 
 	//Creates an ArrayList of courses
 	private static ArrayList<Course> createCourses(ArrayList<Integer> courseSearchValues, int[] yearsOfEachCourse, List<PastPaper> papers){
@@ -931,6 +933,7 @@ public class TCDPastPapers {
 		return courses;
 	}
 
+
 	//Make a PaperLink for every PastPaper
 	private static List<PaperLink> createPaperLinks(List<PastPaper> papers){
 		List<PaperLink> paperLinks = new ArrayList<>();
@@ -955,6 +958,7 @@ public class TCDPastPapers {
 		return p2;
 	}
 
+
 	//Add the paperLinks to their modules
 	private static ArrayList<Module> addPaperLinksToModules(ArrayList<Module> modules,List<PaperLink> paperLinks) {
 		for (int i = 0; i < paperLinks.size(); i++) {
@@ -972,6 +976,7 @@ public class TCDPastPapers {
 		return modules;
 	}
 
+
 	//Make an array corresponding to the courses where each index contains the number of years of the course
 	private static int[] getYearsOfEachCourse(ArrayList<Integer> courseSearchValues, List<PastPaper> papers){
 		int[] yearsOfEachCourse = new int[courseSearchValues.size()];
@@ -987,7 +992,8 @@ public class TCDPastPapers {
 		return yearsOfEachCourse;
 	}
 
-	//Prints a list of all courses in a JSON format
+
+	//Prints a list of all courses in a JSON flikeormat
 	private static void printCoursesList(ArrayList<Course> courses){
     	System.out.println("Courses{");
     	for(int i=0;i<courses.size();i++){
@@ -996,7 +1002,8 @@ public class TCDPastPapers {
     	System.out.println("}");
 	}
 
-	//Prints all the courses in the list in a JSON format
+
+	//Prints all the courses in the list in a JSON like format
 	private static void printAllCourses(ArrayList<Course> courses){
 		for(int i=0;i<courses.size();i++){
 			System.out.println(courses.get(i).getName()+"{");
@@ -1011,6 +1018,8 @@ public class TCDPastPapers {
 		}
 	}
 
+
+	//Prints all the modules in the list in a JSON like format
 	private static void printAllModules(ArrayList<Module> modules){
 		System.out.println("Modules{");
 		for(int i=0;i<modules.size();i++){
@@ -1023,12 +1032,83 @@ public class TCDPastPapers {
 		System.out.println("}");
 	}
 
-	private static void writeDBToJSON(ArrayList<Course> courses, ArrayList<Module> modules){
 
+	//Writes the courses and modules into the JSON in the format necessary for the tcdpastpapers NoSQL database
+	private static void writeDBToJSON(ArrayList<Course> courses, ArrayList<Module> modules,String json){
+		JSONObject db = new JSONObject();
+
+		//Create list of course names
+		JSONArray listOfCourseNames = new JSONArray();
+		for(int i=0;i<courses.size();i++){
+			listOfCourseNames.put(courses.get(i).getName());
+		}
+
+		//Create list of modules
+		JSONObject listOfModules = new JSONObject();
+		for(int i=0;i<modules.size();i++){
+			Module module = modules.get(i);
+			JSONObject m = new JSONObject();
+			JSONArray papers = new JSONArray();
+			for(int j=0;j<module.getPapers().size();j++){
+				PaperLink paperLink = modules.get(i).getPapers().get(j);
+				JSONObject paper = new JSONObject();
+				paper.put("year",paperLink.getYear());
+				paper.put("link",paperLink.getLink());
+				papers.put(paper);
+			}
+			m.put("name",module.getName());
+			m.put("papers",papers);
+			if(!module.getID().equals("")) {
+				listOfModules.put(module.getID(), m);
+			}
+		}
+
+		//Create list of courses
+		JSONObject listOfCourses = new JSONObject();
+		for(int i=0;i<courses.size();i++){
+			Course course = courses.get(i);
+			JSONObject years = new JSONObject();
+			for(int j=0;j<course.getYears().size();j++){
+				JSONObject year = new JSONObject();
+				JSONArray ms = new JSONArray();
+				for(int k=0;k<course.getYears().get(j).size();k++){
+					String m = course.getYears().get(j).get(k);
+					ms.put(m);
+				}
+				years.put("year"+(j+1),ms);
+			}
+			listOfCourses.put(listOfCourseNames.get(i).toString(),years);
+		}
+
+		db.put("CourseNames",listOfCourseNames);
+		db.put("Modules",listOfModules);
+		db.put("Courses",listOfCourses);
+		// try-with-resources statement based on post comment below :)
+		try (FileWriter file = new FileWriter(json)) {
+			file.write("[");
+
+			/*
+			file.write(listOfCourseNames.toString());
+			for(int i=0;i<listOfModules.length();i++){
+				file.write(listOfModules.get(i).toString());
+			}
+			for(int i=0;i<listOfCourses.length();i++){
+				file.write(listOfCourses.get(i).toString());
+			}
+			*/
+			file.write(db.toString());
+
+
+			file.write("]");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
+
     //Writes up the data into a json in the format for a NoSQL database.
-    private static void createDatabase(List<PastPaper> papers){
+    private static void createDatabase(List<PastPaper> papers, String url){
 
 		ArrayList<Integer> courseSearchValues = createCourseSearchValuesArrayList();
 
@@ -1042,11 +1122,11 @@ public class TCDPastPapers {
 
     	modules = addPaperLinksToModules(modules,paperLinks);
 
-		printCoursesList(courses);
-		printAllCourses(courses);
-		printAllModules(modules);
+		//printCoursesList(courses);
+		//printAllCourses(courses);
+		//printAllModules(modules);
 
-		writeDBToJSON(courses,modules);
+		writeDBToJSON(courses,modules,url);
 
     }
 }

@@ -1,6 +1,7 @@
 import java.util.ArrayList;
+import java.util.Comparator;
 
-public class Module {
+public class Module implements Comparable<Module>{
 	
 	String ID;
 	String name;
@@ -70,7 +71,10 @@ public class Module {
 	public void setPapers(ArrayList<PaperLink> papers) {
 		this.papers = papers;
 	}
-	
-	
+
+	@Override
+	public int compareTo(Module m){
+		return this.getID().compareTo(m.getID());
+	}
 
 }
