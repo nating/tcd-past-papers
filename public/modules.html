@@ -2,7 +2,8 @@
 <head>
     <meta charset="utf-8">
     <title>Examinating - Courses</title>
-    <script src="https://rawgit.com/mholt/PapaParse/master/papaparse.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/3.6.2/firebase.js"></script>
     
     <link rel="stylesheet" href="examinating.css">
     <!-- Latest compiled and minified CSS -->
@@ -30,8 +31,18 @@
         Waiting for Files to be read.
     </div>
     <script>
-        var clearCookies = function(){document.cookie = "expires=Thu, 01 Jan 1970 00:00:00 UTC";}
-        //
+
+        var config = {
+            apiKey: "AIzaSyB7DdCYWWF1hghR6G8tdLCTMT12L86rLds",
+            authDomain: "tcdpastpapers.firebaseapp.com",
+            databaseURL: "https://tcdpastpapers.firebaseio.com",
+            storageBucket: "tcdpastpapers.appspot.com",
+            messagingSenderId: "856128016051"
+        };
+        firebase.initializeApp(config);
+
+        var db = firebase.database();
+
         var MODULE_ID = 0;
         var YEAR = 1;
         var MODULE_NAME = 2;
@@ -48,17 +59,10 @@
         
         //Code run once the page is loaded.
         var startUp = function(){
-            parseData("https://raw.githubusercontent.com/nating/examinating/master/past-papers/AnnualPapers.csv", updateData);
-        }
-        parseData = function(url, callBack) {
-            Papa.parse(url,{download: true, dynamicTyping: true, complete: function(results){ callBack(results.data);} });
-        }
-        updateData = function(parsedFile) {
-            csvRows = parsedFile;
-            showAllCourses();
+            displayCourses();
         }
         
-        var showAllCourses = function(){
+        var displayCourses = function(){
             var options = document.getElementById("options");
             options.innerHTML = `
                 <ul class="courses">
@@ -66,7 +70,7 @@
                     <li id="23">Biblical and Theological Studies</li>
                     <li id="481">Business and Computing</li>
                     <li id="80">Business Studies</li>
-                    <li id="405">Business Studies and a Language</li>
+                    <li id="405">Busiess Studies and a Language</li>
                     <li id="456">Chemistry with Molecular Modelling</li>
                     <li id="457">Children's and General Nursing (BSc)</li>
                     <li id="5">Classics&nbsp;</li>
@@ -205,188 +209,107 @@
                     <li id="08">Sports Medicine (M.Sc )</li>
                     <li id="129">Statistics (PG Diploma)</li>
                 </ul>`;
-            makeCoursesClickable();
-        }
-        
-        var makeCoursesClickable = function() {
+
+            //Add an onclick attribute to all listelements in lists of class 'courses' to displayYears()
             var links = document.getElementsByTagName('li');
             var howLongEachCourseHasBeenAround = "";
             for(var i=0;i<links.length;i++) {
                 var link = links[i];
                 if(link.parentElement.getAttribute('class') == 'courses') {
-                    link.setAttribute("onclick","showYearsOfCourse("+link.getAttribute('id')+");");
-                    link.innerHTML += "  "+findHowLongCourseHasBeenAround(link.getAttribute('id')+'\n');
-                }
-            }
-            //console.log(howLongEachCourseHasBeenAround);
-        }
-        
-        var findHowLongCourseHasBeenAround = function(searchValue){
-            var lowestYear = 3000;
-            var highestYear = 0;
-            for(var i=0;i<csvRows.length;i++){
-                if(csvRows[i][SEARCH_VALUE]==searchValue){
-                    highestYear = highestYear>csvRows[i][YEAR]? highestYear : csvRows[i][YEAR];
-                    lowestYear = lowestYear<csvRows[i][YEAR]? lowestYear : csvRows[i][YEAR];
-                }
-            }
-            if(highestYear!=0 && lowestYear!= 3000){
-                return "("+lowestYear+"-"+highestYear+")";
-            }
-            return "(There are no papers for this course)";
-        }
-        
-        var makeYearsClickable = function() {
-            var links = document.getElementsByTagName('li');
-            for(var i=0;i<links.length;i++) {
-                var link = links[i];
-                if(link.parentElement.getAttribute('class') == 'years') {
-                    link.setAttribute("onclick","showModulesOfYear("+link.getAttribute('id')+");");
+                    link.setAttribute("onclick","displayYears("+link.getAttribute('id')+");");
                 }
             }
         }
-        
-        //Needs to be edited to show all _years in a course_ not _all years in a school_
-        var showYearsOfCourse = function(listElement){
-                console.log("I'm here x");
-            var listOfYears = "<a href=\"modules.html\"><-- All Courses</a><ul class=\"years\">";
-            var searchValue = listElement;
-            //var index = getCourseIndex(csvRows,searchValue);
-            var currentYear = 1;
-            while(currentYear<7){
-                console.log("Now checking with currentYear="+currentYear);
-                var index = 0;
-                while(index<csvRows.length){
-                    /*if(csvRows[index][SEARCH_VALUE]==searchValue && csvRows[index][ACADEMIC_YEAR]==currentYear){
-                        listOfYears += "<li id=\""+csvRows[index][MODULE_ID]+searchValue+"\">"+csvRows[index][MODULE_NAME]+csvRows[index][ACADEMIC_YEAR]+"</li>";
-                    }*/
-                    if(csvRows[index][MODULE_ID]=="CS4LL5"){
-                        console.log(csvRows[index][MODULE_ID]+" "+csvRows[index][ACADEMIC_YEAR]+" "+csvRows[index][SEARCH_VALUE]);
-                    }
-                    
-                    if(csvRows[index][ACADEMIC_YEAR]==currentYear && csvRows[index][SEARCH_VALUE]==searchValue){
-                        if(csvRows[index][ACADEMIC_YEAR]==1){
-                            listOfYears += "<li id=\""+csvRows[index][ACADEMIC_YEAR]+searchValue+"\">1st year</li>";
-                            break;}
-                        else if(csvRows[index][ACADEMIC_YEAR]==2){
-                            listOfYears += "<li id=\""+csvRows[index][ACADEMIC_YEAR]+searchValue+"\">2nd year</li>";
-                            break;}
-                        else if(csvRows[index][ACADEMIC_YEAR]==3){
-                            listOfYears += "<li id=\""+csvRows[index][ACADEMIC_YEAR]+searchValue+"\">3rd year</li>";
-                            break;}
-                        else{
-                            listOfYears += "<li id=\""+csvRows[index][ACADEMIC_YEAR]+searchValue+"\">"+csvRows[index][ACADEMIC_YEAR]+"th year</li>";
-                            break;}
-                    }
-                    index++;
-                }
-                currentYear++;
-            }
-            listOfYears += "</ul><div id=\"modulesOfTheYear\"></div>"
 
-            var options = document.getElementById("options");
-            options.innerHTML = listOfYears;
-            makeYearsClickable();
+
+
+        //Displays the years of the course with the given searchValue
+        var displayYears = function(searchValue){
+
+            db.ref().child('Courses').child(searchValue).once('value').then(function(snapshot){ 
+
+                var course;
+                course = snapshot.val(); 
+
+                console.log(course.length);
+
+                var listOfYears = "<a href=\"modules.html\"><-- All Courses</a><ul class=\"years\">";
+                for(var i=0;i<course.length;i++){
+                    console.log("i is "+i);
+                    if(i==0){
+                        listOfYears += "<li id=\""+(i+1)+searchValue+"\">1st year</li>";
+                    }
+                    else if(i==1){
+                        listOfYears += "<li id=\""+(i+1)+searchValue+"\">2nd year</li>";
+                    }
+                    else if(i==2){
+                        listOfYears += "<li id=\""+(i+1)+searchValue+"\">3rd year</li>";
+                    }
+                    else{
+                        listOfYears += "<li id=\""+(i+1)+searchValue+"\">"+(i+1)+"th year</li>";
+                    }
+                }
+                listOfYears += "</ul><div id=\"modulesOfTheYear\"></div>"
+
+                var options = document.getElementById("options");
+                options.innerHTML = listOfYears;
+
+                //Add on onclick method to each of the listelements in lists of class 'years' to displayModules
+                var links = document.getElementsByTagName('li');
+                for(var i=0;i<links.length;i++) {
+                    var link = links[i];
+                    var linkIDString = ""+link.getAttribute('id');
+                    if(link.parentElement.getAttribute('class') == 'years') {
+                        link.setAttribute("onclick","displayModules("+linkIDString+");");
+                    }
+                }
+
+            });
         }
         
+
         //Takes a String with a yearOfCourse+SearchValue and adds a list to the "modulesOfTheYear" element
-        var showModulesOfYear = function(listElement){
+        var displayModules = function(listElement){
             var listOfModules = "<ul id=\"modules\">";
-            listElementString = ""+listElement;
-            var addedModules = [];
+            var listElementString = ""+listElement;
+            console.log("LES is:"+listElementString);
             var savedModulesString = getCookie("modules1");
             var savedModules = savedModulesString.split(',');
-            var yearOfCourse = listElementString.substring(0,1);// <------    
+            var yearOfCourse = listElementString.substring(0,1);  
             var searchValue = listElementString.substring(1,listElementString.length);
-            /*var index = getModuleCodeIndex(csvRows,searchValue);*/
-            for(var i=0;i<csvRows.length;i++){
-                if(csvRows[i][SEARCH_VALUE]==searchValue && csvRows[i][ACADEMIC_YEAR]==yearOfCourse){
-                    var alreadyAdded = false;
-                    for(var j=0;j<addedModules.length;j++){
-                        if(addedModules[j]==csvRows[i][MODULE_ID]){
-                            alreadyAdded = true; break;
+
+            db.ref().child('Courses').child(searchValue).once('value').then(function(snapshot){ 
+
+                var course;
+                course = snapshot.val(); 
+                var year = course[yearOfCourse-1];
+
+                for(var i=0;i<year.length;i++){
+                    var alreadySaved = false;
+                    for(var j=0;j<savedModules.length;j++){
+                        if(savedModules[j]==year[i]){
+                            alreadySaved = true; break;
                         }
                     }
-                    if(!alreadyAdded){
-                        var alreadySaved = false;
-                        for(var j=0;j<savedModules.length;j++){
-                            if(savedModules[j]==csvRows[i][MODULE_ID]){
-                                alreadySaved = true; break;
-                            }
-                        }
-                        if(alreadySaved){
-                        listOfModules += "<input type=\"checkbox\" checked id=\""+csvRows[i][MODULE_ID]+"\" onclick='setUserDetails(\""+csvRows[i][MODULE_ID]+"\");'>"+csvRows[i][MODULE_ID]+" "+csvRows[i][MODULE_NAME]+"</input><br>";
-                        }
-                        else{
-                        listOfModules += "<input type=\"checkbox\" id=\""+csvRows[i][MODULE_ID]+"\" onclick='setUserDetails(\""+csvRows[i][MODULE_ID]+"\");'>"+csvRows[i][MODULE_ID]+" "+csvRows[i][MODULE_NAME]+"</input><br>";
-                        }
-                        addedModules.push(csvRows[i][MODULE_ID]);
+                    if(alreadySaved){
+                    listOfModules += "<input type=\"checkbox\" checked id=\""+year[i]+"\" onclick='setUserDetails(\""+year[i]+"\");'>"+year[i]+"</input><br>";
+                    }
+                    else{
+                    console.log("there:"+year[i]);
+                    console.log("a:"+listOfModules);
+                    listOfModules += "<input type=\"checkbox\" id=\""+year[i]+"\" onclick='setUserDetails(\""+year[i]+"\");'>"+year[i]+"</input><br>";
+                    console.log("b:"+listOfModules);
                     }
                 }
-            }
-            listOfModules += "</ul>"
 
-            var modulesOfTheYear = document.getElementById("modulesOfTheYear");
-            modulesOfTheYear.innerHTML = listOfModules;
+                listOfModules += "</ul>"
+
+                var modulesOfTheYear = document.getElementById("modulesOfTheYear");
+                modulesOfTheYear.innerHTML = listOfModules;
+
+            });
         }
         
-        
-        //Binary search data for a course. (data being sorted by courseCode)
-        var getModuleCodeIndex = function(data,courseCode){
-            
-            var low = 0;
-            var high = data.length-1;
-            var centre;
-            var courseCodeAtCentre;
-            
-            while(low<=high){
-                centre = Math.round((low+high)/2);
-                courseCodeAtCentre = data[centre][MODULE_CODE].substring(0,2);
-                if(courseCodeAtCentre==courseCode){
-                    while(centre!=0 && data[centre-1][MODULE_CODE].substring(0,2)==courseCode){
-                        centre--;
-                    }
-                    return centre;
-                }
-                else if(courseCodeAtCentre < courseCode){
-                    low = centre+1;
-                }
-                if(courseCodeAtCentre > courseCode){
-                    high = centre-1;
-                }
-            }
-            console.log("No link was found for the courseCode: "+courseCode);
-            return -1;
-        };
-        
-        
-        //Binary search data for a course. (data being sorted by searchValue)
-        var getCourseIndex = function(data,searchValue){
-            
-            var low = 0;
-            var high = data.length-1;
-            var centre;
-            var valAtCentre;
-            
-            while(low<=high){
-                centre = Math.round((low+high)/2);
-                valAtCentre = data[centre][SEARCH_VALUE];
-                if(valAtCentre==searchValue){
-                    while(centre!=0 && data[centre-1][SEARCH_VALUE]==searchValue){
-                        centre--;
-                    }
-                    return centre;
-                }
-                else if(valAtCentre < searchValue){
-                    low = centre+1;
-                }
-                if(valAtCentre > searchValue){
-                    high = centre-1;
-                }
-            }
-            console.log("No link was found for the searchValue: "+searchValue);
-            return -1;
-        };
 
         //Set the user details in the Cookie. The passed moduleCode is added or removed from the cookie.
         var setUserDetails = function(moduleCode){
@@ -459,68 +382,6 @@
             return "";
         };
 
-        //  Here are all the different schools:
-        
-                    /*<li id="AN">AN Anatomy</li>
-                    <li id="AP">AP Foundation Course for Higher Education</li>
-                    <li id="BI">BI Biochemistry &amp; Immunology</li>
-                    <li id="BO">BO Botany</li>
-                    <li id="BU">BU Business Studies</li>
-                    <li id="BY">BY Biology</li>
-                    <li id="CE">CE Civil Structural &amp; Enviromental Engineering</li>
-                    <li id="CH">CH Chemistry</li>
-                    <li id="CL">CL Classics</li>
-                    <li id="CS">CS Computer Science</li>
-                    <li id="DE">DE Dental Studies</li>
-                    <li id="DF">DF Deaf Studies</li>
-                    <li id="DR">DR Drama</li>
-                    <li id="EC">EC Economics</a></li>
-                    <li id="EE">EE Electrical &amp; Electronic Engineering</li>
-                    <li id="EN">EN English</li>
-                    <li id="ES">ES Enviromental Science</li>
-                    <li id="ET">ET Music Education</li>
-                    <li id="FB">FB Functional Biology</li>
-                    <li id="FR">FR French</li>
-                    <li id="GE">GE Genetics &amp; Microbiology</li>
-                    <li id="GG">GG Geography</li>
-                    <li id="GL">GL Geology</li>
-                    <li id="GR">GR German</li>
-                    <li id="HA">HA History of Art</li>
-                    <li id="HE">HE Religions &amp; Theology</li>
-                    <li id="HH">HH Histories &amp; Humanitaries</li>
-                    <li id="HI">HI History</li>
-                    <li id="IE">IE Imagining Ireland</li>
-                    <li id="IR">IR Irish Studies</li>
-                    <li id="IT">IT Italian</li>
-                    <li id="LA">LA Law</li>
-                    <li id="LI">LI Linguistics</li>
-                    <li id="LY">LY Loyola Institute</li>
-                    <li id="MA">MA Mathematics</li>
-                    <li id="MD">MD Medicine</li>
-                    <li id="ME">ME Mechanical &amp; Manufactural Engineering</li>
-                    <li id="MI">MI Microbiology</li>
-                    <li id="MU">MU Music</li>
-                    <li id="MW">MW Midwifery</a></li>
-                    <li id="NM">NM Near &amp; Middle Eastern Studies</li>
-                    <li id="NU">NU Nursing</a></li>
-                    <li id="OT">OT Occupational Therapy</li>
-                    <li id="PG">PG Physiology</li>
-                    <li id="PH">PH Pharmacy</li>
-                    <li id="PI">PI Phisiology</li>
-                    <li id="PL">PL Polish</li>
-                    <li id="PO">PO Political Science</li>
-                    <li id="PR">PR Psychiatry</li>
-                    <li id="PS">PS Psychology</li>
-                    <li id="PT">PT Physiotherapy</li>
-                    <li id="PY">PY Physics</li>
-                    <li id="RT">RT Radiotherapy</li>
-                    <li id="RU">RU Russian &amp; Slavonic Studies</li>
-                    <li id="SL">SL Clinical Speech &amp; Language Studies</li>
-                    <li id="SO">SO Sociology</li>
-                    <li id="SP">SP Hispanic Studies</li>
-                    <li id="SS">SS Social Work &amp; Social Policy</li>
-                    <li id="ST">ST Statistics</li>
-                    <li id="ZO">ZO Zoology</li>*/
-        
+        var clearCookies = function(){document.cookie = "expires=Thu, 01 Jan 1970 00:00:00 UTC";}        
     </script>
 </body>

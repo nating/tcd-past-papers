@@ -3,7 +3,6 @@
 
     <meta charset="utf-8">
     <title>Examinating</title>
-    <script src="https://rawgit.com/mholt/PapaParse/master/papaparse.js"></script>
 
     <script src="https://www.gstatic.com/firebasejs/3.6.2/firebase.js"></script>
     
@@ -49,10 +48,8 @@
         firebase.initializeApp(config);
 
         // Get a reference to the database service
-        var database = firebase.database();
+        var db = firebase.database();
 
-        var data;
-        
         var MODULE_ID = 0;
         var YEAR_OF_COURSE = 1;
         var MODULE_NAME = 2;
@@ -75,36 +72,16 @@
               
         //Code run once the page is loaded.
         var startUp = function(){
-            parseData("https://raw.githubusercontent.com/nating/examinating/master/past-papers/AnnualPapers.csv", updateData,console.log);
-        }
-        parseData = function(url, callBack) {
-            Papa.parse(url,{download: true, dynamicTyping: true, complete: function(results){ callBack(results.data);} });
-        }
-        updateData = function(parsedFile) {
-            console.log("The last Active module was: "+document.cookie+".");
-            console.log("Tira");
-
-            var yeppy = firebase.database().ref().child('9099').child('moduleName');
-
-            console.log(yeppy);
-            console.log("Ma suu");
-            data = parsedFile;
-            displayModulesBox(data);
-            console.log("The last Active module was: "+document.cookie+".");
             var lastActiveModule1 = getCookie("lastActiveModule1");
-            console.log("The last Active module was: "+lastActiveModule1+".");
-            displayYears(data,lastActiveModule1);
+            displayYears(lastActiveModule1);
         }
 
         var updateYears = function(moduleCode){
-            console.log("1738");
-            console.log(data);                     //  <---------------  can I use 'data' here ? 
-            console.log("1739");
-            displayYears(data,moduleCode);
+            displayYears(moduleCode);
         }
         
         //Display the appropriate content for the user in the modulesBox.
-        var displayModulesBox = function(data){
+        var displayModulesBox = function(){
             var modulesString = getCookie("modules1");
             if(modulesString==""){
                 var modulesBox = document.getElementById("modulesBox");
@@ -134,7 +111,7 @@
         };
         
         //Display the years for a module in the yearsBox.
-        var displayYears = function(data,moduleCode){
+        var displayYears = function(moduleCode){
             document.cookie = "lastActiveModule1="+moduleCode+";";
             if(moduleCode==""){ return -1; }
             var htmlListOfYears = "<h2>"+getModuleName(data,moduleCode)+"</h2><ul>"
@@ -160,70 +137,7 @@
             }
 
         };
-        
-        //Binary search data for module code.
-        var getLinkIndex = function(data,moduleCode){
-            
-            var low = 0;
-            var high = data.length-1;
-            var centre;
-            var moduleCodeAtCentre;
-            
-            while(low<=high){
-                centre = Math.round((low+high)/2);
-                moduleCodeAtCentre = data[centre][0];
-                if(moduleCodeAtCentre==moduleCode){
-                    while(centre>0 && data[centre-1][0]==moduleCode){
-                        centre--;
-                    }
-                    return centre;
-                }
-                else if(moduleCodeAtCentre < moduleCode){
-                    low = centre+1;
-                }
-                if(moduleCodeAtCentre > moduleCode){
-                    high = centre-1;
-                }
-            }
-            console.log("No link was found for the moduleCode: "+moduleCode);
-            return -1;
-        };
-        
-        
-        //Check if the module has a link for that year.
-        var isLink = function(data,module,year){
-            var index = getLinkIndex(data,module);
-            if(index!=-1){
-                for(var i=0;i<YEARS;i++){
-                    if(data[index+i][0]!=module){
-                        return false;
-                    }
-                    if(data[index+i][1]==year){
-                        return true;
-                    }
-                }
-            }
-            return false;
-        };
-        
-        
-        //Get the link for a specific year of a module.
-        var getLink = function(data,module,year){
-            var index = getLinkIndex(data,module);
-            for(var i=0;i<YEARS;i++){
-                if(data[index+i][1]==year){
-                    console.log("Hey i:"+i+" year:"+year+"The link was:"+data[index][3]);
-                    return data[index+i][3];
-                }
-            }
-            return "No link found.";
-        };
 
-        //Get the name of a module.
-        var getModuleName = function(data,module){
-            var index = getLinkIndex(data,module);
-            return data[index][2];
-        };
         
         //Set the user details in the Cookie. The passed moduleCode is added or removed from the cookie.
         var setUserDetails = function(moduleCode){
