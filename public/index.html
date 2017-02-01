@@ -24,11 +24,16 @@
             <li><a href="about.html" id="About">About</a></li>
           </ul>
           <form class="navbar-form navbar-right">
-            <input type="text" class="form-control" placeholder="Search...">
+            <input type="text" class="form-control" id="textInput" placeholder="Search..."">
           </form>
         </div>
       </div>
     </nav>
+    <div>
+    <button type="button" onclick="displaySearchSuggestions()">Click Me!</button>
+    </div>
+    <div id="suggestionsBox">
+    </div>
     <div class="col-lg-6" id="modulesBox">
     </div>
     <div class="col-lg-6 text-center" id="yearsBox">
@@ -59,6 +64,8 @@
         var LAST_ACTIVE_MODULE = 1;
         var MODULES = 2;
         var YEARS = 2016-1998;
+
+        var SEARCH_SUGGESTION_LIMIT = 5;
         
         window.addEventListener('load',function(){ startUp();},false);
         
@@ -74,10 +81,7 @@
         var startUp = function(){
             var lastActiveModule1 = getCookie("lastActiveModule1");
             displayYears(lastActiveModule1);
-        }
-
-        var updateYears = function(moduleCode){
-            displayYears(moduleCode);
+            displayModulesBox();
         }
         
         //Display the appropriate content for the user in the modulesBox.
@@ -96,52 +100,59 @@
             }
             else{
                 var modules = modulesString.split(',');
-                console.log("the modules are:"+modules+".");
-                var htmlListOfModuleNames = "<ul>"
+                var newDiv = document.createElement('div');
+                newDiv.id = 'modulesBox';
+                newDiv.setAttribute('class',"col-lg-6");
+                var modulesList = document.createElement('ul');
                 for(var i=0;i<modules.length;i++){
-                    var index = getLinkIndex(data,modules[i]);
-                    console.log(index);
-                    htmlListOfModuleNames += "<li class=\"text-left\" id=\""+data[index][0]+"\" onclick='updateYears(\""+modules[i]+"\");'>"+data[index][0]+" "+data[index][2]+"</li>";
+                    addModule(modules[i],modulesList);
                 }
-                htmlListOfModuleNames += "</ul>"
             
+                newDiv.append(modulesList);
                 var modulesBox = document.getElementById("modulesBox");
-                modulesBox.innerHTML = htmlListOfModuleNames;
+                modulesBox.parentNode.replaceChild(newDiv,modulesBox);
             }
         };
         
         //Display the years for a module in the yearsBox.
         var displayYears = function(moduleCode){
-            document.cookie = "lastActiveModule1="+moduleCode+";";
-            if(moduleCode==""){ return -1; }
-            var htmlListOfYears = "<h2>"+getModuleName(data,moduleCode)+"</h2><ul>"
-            for(var year=2016;year>1997;year--){
-                if(isLink(data,moduleCode,year)){
-                    link = getLink(data,moduleCode,year);
-                    console.log("The year: "+year+" The link: "+link);
-                    htmlListOfYears += "<li><a href=\""+link+"\">"+year+"</a></li>";
+
+            db.ref().child('Modules').child(moduleCode).once('value').then(function(snapshot){ 
+
+                var module = snapshot.val(); 
+                var moduleName  = module["name"];
+                var papers = module["papers"];
+
+                document.cookie = "lastActiveModule1="+moduleCode+";";
+                if(moduleCode==""){ return -1; }
+                var htmlListOfYears = "<h2>"+moduleName+"</h2><ul>";
+                for(var i=0;i<papers.length;i++){
+                    htmlListOfYears += "<li><a href=\""+papers[i]["link"]+"\">"+papers[i]["year"]+"</a></li>";
                 }
-            }
-            var htmlListOfModuleNames = "</ul>"
-            var yearsBox = document.getElementById("yearsBox");
-            yearsBox.innerHTML = htmlListOfYears;
-            var bodyHeight = document.getElementsByTagName('html')[0].clientHeight;
-            var modulesBox = document.getElementById('modulesBox');
-            var yearsBox = document.getElementById('yearsBox');
-            var navHeight = document.getElementsByTagName('nav')[0].clientHeight;
-            if(modulesBox.clientHeight<bodyHeight){
-                modulesBox.style["margin-top"] = ((bodyHeight/2)-(modulesBox.clientHeight/2))+(navHeight)+"px";
-            }
-            if(yearsBox.clientHeight<bodyHeight){
-                yearsBox.style["margin-top"] = ((bodyHeight/2)-(yearsBox.clientHeight/2))+(navHeight)+"px";
-            }
+                var htmlListOfModuleNames = "</ul>"
+                var yearsBox = document.getElementById("yearsBox");
+                yearsBox.innerHTML = htmlListOfYears;
+
+                //Set the height of the box
+                var bodyHeight = document.getElementsByTagName('html')[0].clientHeight;
+                var modulesBox = document.getElementById('modulesBox');
+                var yearsBox = document.getElementById('yearsBox');
+                var navHeight = document.getElementsByTagName('nav')[0].clientHeight;
+                if(modulesBox.clientHeight<bodyHeight){
+                    modulesBox.style["margin-top"] = ((bodyHeight/2)-(modulesBox.clientHeight/2))+(navHeight)+"px";
+                }
+                if(yearsBox.clientHeight<bodyHeight){
+                    yearsBox.style["margin-top"] = ((bodyHeight/2)-(yearsBox.clientHeight/2))+(navHeight)+"px";
+                }
+
+            });
 
         };
 
-        
+    
         //Set the user details in the Cookie. The passed moduleCode is added or removed from the cookie.
         var setUserDetails = function(moduleCode){
-            console.log("Setting now. What was clicked was: "+moduleCode);
+            console.log("Setting the user details. What was clicked was: "+moduleCode);
             var modulesString = getCookie("modules1");
             var modules = modulesString.split(',');
             //New User
@@ -193,6 +204,61 @@
             }
             return 1;
         };
+
+        function addModule(id, parentNode){
+
+            var li = document.createElement('li');
+
+            li.id = id;
+            li.className = "text-left";
+            li.onclick = function(){ displayYears(id); };
+
+            li.append(document.createTextNode(id))
+
+            getModuleName(id).then(function(name){
+                li.innerHTML += ' ' + name;
+                parentNode.appendChild(li);
+            })
+        }
+
+        //Returns promise containing name
+        function getModuleName(id){
+          return db.ref().child('Modules').child(id).once('value').then(function(snapshot){ return snapshot.val().name; });
+        }
+
+
+        //Returns modules
+        function displaySearchSuggestions(){
+
+            var searchVal = document.getElementById('textInput').value;
+
+            db.ref().child('Modules').orderByKey().startAt(searchVal).limitToFirst(SEARCH_SUGGESTION_LIMIT).once('value').then(function(snapshot){ 
+
+                var keys = Object.keys(snapshot.val());
+                var newDiv = document.createElement('div');
+                newDiv.id = 'suggestionsBox';
+                var suggestions = document.createElement('ul');
+                for(var i=0;i<keys.length;i++){
+
+                    var sug = document.createElement('li');
+                    var input = document.createElement('input');
+
+                    input.type = "checkbox";
+                    input.setAttribute('onclick',"setUserDetails('"+keys[i]+"'); startUp();");
+
+                    sug.append(input);
+                    sug.append(document.createTextNode(keys[i]));
+
+                    suggestions.append(sug);
+
+                    console.log(keys[i]);
+                }
+
+                newDiv.append(suggestions);
+                var suggestionsBox = document.getElementById('suggestionsBox');
+                suggestionsBox.parentNode.replaceChild(newDiv,suggestionsBox);
+            });
+        }
         
         //Returns the value of a Cookie
         var getCookie = function(cname) {

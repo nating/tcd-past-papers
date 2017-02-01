@@ -55,8 +55,6 @@
         
         window.addEventListener('load',function(){ startUp();},false);
         
-        var csvRows;
-        
         //Code run once the page is loaded.
         var startUp = function(){
             displayCourses();
@@ -270,7 +268,9 @@
 
         //Takes a String with a yearOfCourse+SearchValue and adds a list to the "modulesOfTheYear" element
         var displayModules = function(listElement){
-            var listOfModules = "<ul id=\"modules\">";
+            var newModulesDiv = document.createElement('div');
+            newModulesDiv.id = 'modulesOfTheYear';
+            var listOfModules =  document.createElement('ul');
             var listElementString = ""+listElement;
             console.log("LES is:"+listElementString);
             var savedModulesString = getCookie("modules1");
@@ -287,27 +287,52 @@
                 for(var i=0;i<year.length;i++){
                     var alreadySaved = false;
                     for(var j=0;j<savedModules.length;j++){
+                        console.log(savedModules[i]);
                         if(savedModules[j]==year[i]){
                             alreadySaved = true; break;
                         }
                     }
                     if(alreadySaved){
-                    listOfModules += "<input type=\"checkbox\" checked id=\""+year[i]+"\" onclick='setUserDetails(\""+year[i]+"\");'>"+year[i]+"</input><br>";
+                        addModule(year[i],listOfModules,true);
                     }
                     else{
-                    console.log("there:"+year[i]);
-                    console.log("a:"+listOfModules);
-                    listOfModules += "<input type=\"checkbox\" id=\""+year[i]+"\" onclick='setUserDetails(\""+year[i]+"\");'>"+year[i]+"</input><br>";
-                    console.log("b:"+listOfModules);
+                        addModule(year[i],listOfModules,false);
                     }
                 }
 
-                listOfModules += "</ul>"
-
+                newModulesDiv.append(listOfModules);
                 var modulesOfTheYear = document.getElementById("modulesOfTheYear");
-                modulesOfTheYear.innerHTML = listOfModules;
+                modulesOfTheYear.parentNode.replaceChild(newModulesDiv,modulesOfTheYear);
 
             });
+        }
+
+         function addModule(id, parentNode,checked){
+
+            var li = document.createElement('li');
+            var input = document.createElement('input');
+
+            input.type = "checkbox";
+            input.setAttribute('onclick',"setUserDetails('"+id+"');");
+
+            if(checked){
+                input.setAttribute('checked', '');
+            }
+            
+
+            li.id = id;
+            li.append(input);
+            li.append(document.createTextNode(id));
+
+            getModuleName(id).then(function(name){
+                li.innerHTML += ' ' + name;
+                parentNode.appendChild(li);
+            })
+        }
+
+        //Returns promise containing name
+        function getModuleName(id){
+          return db.ref().child('Modules').child(id).once('value').then(function(snapshot){ return snapshot.val().name; });
         }
         
 
