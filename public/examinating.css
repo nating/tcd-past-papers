@@ -22,3 +22,8 @@ ul {
 #modulesBox ul li {
 	margin-top:2%;
 }
+
+#suggestionsBox {
+	position: absolute;
+	background-color: red;
+}

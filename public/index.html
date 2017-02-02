@@ -23,16 +23,18 @@
             <li><a href="modules.html" id="All Modules">All Modules</a></li>
             <li><a href="about.html" id="About">About</a></li>
           </ul>
+          <div>
           <form class="navbar-form navbar-right">
-            <input type="text" class="form-control" id="textInput" placeholder="Search..."">
+            <input type="text" class="form-control" id="textInput" placeholder="Changed..." oninput="displaySearchSuggestions();">
+        <div id="suggestionsBox">
+        </div>
           </form>
+          </div>
         </div>
       </div>
     </nav>
     <div>
     <button type="button" onclick="displaySearchSuggestions()">Click Me!</button>
-    </div>
-    <div id="suggestionsBox">
     </div>
     <div class="col-lg-6" id="modulesBox">
     </div>
@@ -227,7 +229,7 @@
         }
 
 
-        //Returns modules
+        //displays the search Suggestions box
         function displaySearchSuggestions(){
 
             var searchVal = document.getElementById('textInput').value;
@@ -237,21 +239,21 @@
                 var keys = Object.keys(snapshot.val());
                 var newDiv = document.createElement('div');
                 newDiv.id = 'suggestionsBox';
-                var suggestions = document.createElement('ul');
-                for(var i=0;i<keys.length;i++){
+                if(searchVal!=""){
+                    var suggestions = document.createElement('ul');
+                    for(var i=0;i<keys.length;i++){
 
-                    var sug = document.createElement('li');
-                    var input = document.createElement('input');
+                        var sug = document.createElement('li');
+                        var input = document.createElement('input');
 
-                    input.type = "checkbox";
-                    input.setAttribute('onclick',"setUserDetails('"+keys[i]+"'); startUp();");
+                        input.type = "checkbox";
+                        input.setAttribute('onclick',"setUserDetails('"+keys[i]+"'); startUp();");
 
-                    sug.append(input);
-                    sug.append(document.createTextNode(keys[i]));
+                        sug.append(input);
+                        sug.append(document.createTextNode(keys[i]));
 
-                    suggestions.append(sug);
-
-                    console.log(keys[i]);
+                        suggestions.append(sug);
+                    }
                 }
 
                 newDiv.append(suggestions);
