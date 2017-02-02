@@ -119,6 +119,8 @@
         //Display the years for a module in the yearsBox.
         var displayYears = function(moduleCode){
 
+            if(moduleCode==""){ return -1; }
+
             db.ref().child('Modules').child(moduleCode).once('value').then(function(snapshot){ 
 
                 var module = snapshot.val(); 
