@@ -23,7 +23,12 @@ ul {
 	margin-top:2%;
 }
 
-#suggestionsBox {
-	position: absolute;
-	background-color: red;
+nav{
+	max-height: 50px;
+}
+
+ul#suggestionsBox li:first-child{
+	border-top: none;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
 }
