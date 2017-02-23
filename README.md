@@ -4,10 +4,10 @@ A Website for students at Trinity College Dublin to more easily navigate the pas
 It can be found at: https://tcdpastpapers.firebaseapp.com/
 
 ## Overview
-The idea for this project is to mimic what has already been done for Computer Science students with www.github.com/nating/trinity-cs-website, for students of every faculty of the college.  
+The idea for this project is to mimic what has already been done for Computer Science students with www.github.com/nating/trinity-cs-website (https://nating.netsoc.ie), for students of every faculty of the college.  
 
 ## Where we at?
-The src files are java programs that scrape the pages of various different formats at https://www.tcd.ie/academicregistry/exams/ and place past paper information into CSV or JSON files..
+The src files are java programs that scrape the pages of various different formats at https://www.tcd.ie/academicregistry/exams/ and place past paper information into CSV or JSON fi
 
 The CSV & JSON files hold information about every past paper that was scraped from the trinity web pages.
 
