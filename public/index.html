@@ -39,9 +39,8 @@
     </div>
     <script>
 
-        // Set the configuration for your app
-        // TODO: Replace with your project's config object
-        // Initialize Firebase
+        // Set the configuration for the app
+        // ie. Initialize Firebase
         var config = {
             apiKey: "AIzaSyB7DdCYWWF1hghR6G8tdLCTMT12L86rLds",
             authDomain: "tcdpastpapers.firebaseapp.com",
@@ -50,8 +49,6 @@
             messagingSenderId: "856128016051"
         };
         firebase.initializeApp(config);
-
-        // Get a reference to the database service
         var db = firebase.database();
 
         var MODULE_ID = 0;
@@ -73,8 +70,6 @@
         //      i.e. also Some ICT students have modules starting with CS
         //Deal with how module years are displayed where two papers are present in one year for a single module
         //Deal with the fact that some modules have changed year of study
-        //Deal with how Fadas and the french equivalent etc are displayed as diamonds
-        //Display a module's name by its newest name: *not its oldest*
               
         //Code run once the page is loaded.
         var startUp = function(){
@@ -126,13 +121,20 @@
 
                 document.cookie = "lastActiveModule1="+moduleCode+";";
                 if(moduleCode==""){ return -1; }
-                var htmlListOfYears = "<h2>"+moduleName+"</h2><ul>";
+                var htmlListOfYears = "<h2>"+moduleName+"</h2><ul id='yearsList'>";
                 for(var i=0;i<papers.length;i++){
                     htmlListOfYears += "<li><a href=\""+papers[i]["link"]+"\">"+papers[i]["year"]+"</a></li>";
                 }
                 var htmlListOfModuleNames = "</ul>"
                 var yearsBox = document.getElementById("yearsBox");
                 yearsBox.innerHTML = htmlListOfYears;
+
+                //Reverse the order of the years so they go from most recent to least recent
+                var ys = document.getElementById("yearsList");
+				var i = ys.childNodes.length;
+				while (i--){
+					ys.appendChild(ys.childNodes[i]);
+				}
 
                 //Set the height of the box
                 var bodyHeight = document.getElementsByTagName('html')[0].clientHeight;
