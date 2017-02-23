@@ -50,39 +50,13 @@
         };
         firebase.initializeApp(config);
 
-        console.log("Remy Boyz");
-
         var db = firebase.database();
 
-        var yeppy;
-        //Here I put all the papers of the CS1003 into the snapshot
+        //Demonstration to remember how to access files within firebase with promises
         db.ref().child('Modules').child('CS1003').child('papers').once('value').then(function(snapshot)
           {
-
-        console.log("1739");
-            //This prints out all the 'papers' of CS1003
-            
-
-            yeppy = snapshot.val();
-
-
-            
-
-
-            console.log(yeppy);
-
-
-        console.log("1740");
-
-            //Here I am trying to print out the 'link' of each of the papers in the snapshot
-            //snapshot.forEach(
-            //function(childSnapshot) {
-            //    console.log(childSnapshot.child('link').once('value'));
-            //}
-            //);
-
+            arrayOfPapersInCS1003 = snapshot.val();	console.log(arrayOfPapersInCS1003);
           });
-        console.log(yeppy);
 
     </script>
 </body>
