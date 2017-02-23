@@ -32,6 +32,8 @@
     </div>
     <script>
 
+/*----DATABASE INITIALISATION---------------------------------------------------------------------------------------------------*/
+
         var config = {
             apiKey: "AIzaSyB7DdCYWWF1hghR6G8tdLCTMT12L86rLds",
             authDomain: "tcdpastpapers.firebaseapp.com",
@@ -40,8 +42,9 @@
             messagingSenderId: "856128016051"
         };
         firebase.initializeApp(config);
-
         var db = firebase.database();
+
+/*----UNIVERSAL CONSTANTS-------------------------------------------------------------------------------------------------------*/
 
         var MODULE_ID = 0;
         var YEAR = 1;
@@ -53,6 +56,8 @@
         var MODULES = 2;
         var YEARS = 2016-1998;
         
+/*----START UP CODE-------------------------------------------------------------------------------------------------------------*/
+
         window.addEventListener('load',function(){ startUp();},false);
         
         //Code run once the page is loaded.
@@ -60,6 +65,8 @@
             displayCourses();
         }
         
+/*----DISPLAYING COURSES--------------------------------------------------------------------------------------------------------*/
+
         var displayCourses = function(){
             var options = document.getElementById("options");
             options.innerHTML = `
@@ -220,20 +227,19 @@
         }
 
 
+/*----DISPLAYING YEARS-----------------------------------------------------------------------------------------------------------*/
 
         //Displays the years of the course with the given searchValue
         var displayYears = function(searchValue){
 
+        	//Get all years of the course from the database
             db.ref().child('Courses').child(searchValue).once('value').then(function(snapshot){ 
 
-                var course;
-                course = snapshot.val(); 
+                var course = snapshot.val(); 
 
-                console.log(course.length);
-
+                //Create a ul element with each of the years of the course
                 var listOfYears = "<a href=\"modules.html\"><-- All Courses</a><ul class=\"years\">";
                 for(var i=0;i<course.length;i++){
-                    console.log("i is "+i);
                     if(i==0){
                         listOfYears += "<li id=\""+(i+1)+searchValue+"\">1st year</li>";
                     }
@@ -261,10 +267,10 @@
                         link.setAttribute("onclick","displayModules("+linkIDString+");");
                     }
                 }
-
             });
         }
-        
+       
+/*----START UP CODE-------------------------------------------------------------------------------------------------------------*/
 
         //Takes a String with a yearOfCourse+SearchValue and adds a list to the "modulesOfTheYear" element
         var displayModules = function(listElement){
@@ -272,34 +278,30 @@
             newModulesDiv.id = 'modulesOfTheYear';
             var listOfModules =  document.createElement('ul');
             var listElementString = ""+listElement;
-            console.log("LES is:"+listElementString);
             var savedModulesString = getCookie("modules1");
             var savedModules = savedModulesString.split(',');
             var yearOfCourse = listElementString.substring(0,1);  
             var searchValue = listElementString.substring(1,listElementString.length);
 
+            //Get all modules for the course
             db.ref().child('Courses').child(searchValue).once('value').then(function(snapshot){ 
 
                 var course;
                 course = snapshot.val(); 
                 var year = course[yearOfCourse-1];
 
+                //Add all modules in the year to the list of modules
                 for(var i=0;i<year.length;i++){
                     var alreadySaved = false;
-                    for(var j=0;j<savedModules.length;j++){
-                        console.log(savedModules[i]);
+                    for(var j=0;j<savedModules.length;j++){;
                         if(savedModules[j]==year[i]){
                             alreadySaved = true; break;
                         }
                     }
-                    if(alreadySaved){
-                        addModule(year[i],listOfModules,true);
-                    }
-                    else{
-                        addModule(year[i],listOfModules,false);
-                    }
+                    addModule(year[i],listOfModules,alreadySaved);
                 }
 
+                //Replace old list of modules with the new one
                 newModulesDiv.append(listOfModules);
                 var modulesOfTheYear = document.getElementById("modulesOfTheYear");
                 modulesOfTheYear.parentNode.replaceChild(newModulesDiv,modulesOfTheYear);
@@ -307,34 +309,32 @@
             });
         }
 
+        //Adds a module with module code 'id' to a list 'parentNode', with a checkbox (defaults to unchecked).
          function addModule(id, parentNode,checked){
-
             var li = document.createElement('li');
             var input = document.createElement('input');
-
             input.type = "checkbox";
             input.setAttribute('onclick',"setUserDetails('"+id+"');");
-
             if(checked){
                 input.setAttribute('checked', '');
             }
-            
-
             li.id = id;
             li.append(input);
             li.append(document.createTextNode(id));
-
             getModuleName(id).then(function(name){
                 li.innerHTML += ' ' + name;
                 parentNode.appendChild(li);
             })
         }
 
+/*----DATABASE-------------------------------------------------------------------------------------------------------------*/
+
         //Returns promise containing name
         function getModuleName(id){
           return db.ref().child('Modules').child(id).once('value').then(function(snapshot){ return snapshot.val().name; });
         }
-        
+
+/*----COOKIES--------------------------------------------------------------------------------------------------------------*/
 
         //Set the user details in the Cookie. The passed moduleCode is added or removed from the cookie.
         var setUserDetails = function(moduleCode){
