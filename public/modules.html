@@ -64,6 +64,33 @@
         var startUp = function(){
             displayCourses();
         }
+
+
+			    function updateContent(state) {
+			    	if (state == null){
+			   			return displayCourses();
+			    	}
+			    	else if(state['year']==null){
+			    		return displayYears(state['course']);
+			    	}
+			    	else{
+			    		return displayModules(state['year']+state['course']);
+			    	}
+			    }
+
+			    // Revert to a previously saved state
+			    window.onpopstate = function(event) {
+			      console.log('popstate fired!');
+			      updateContent(event.state);
+			    };
+
+			    /*
+			    // Change to a new state
+			    window.onpushstate = function(event) {
+			      console.log('pushstate fired!');
+			      updateContent(event.state);
+			    };
+			    */
         
 /*----DISPLAYING COURSES--------------------------------------------------------------------------------------------------------*/
 
@@ -221,13 +248,21 @@
             for(var i=0;i<links.length;i++) {
                 var link = links[i];
                 if(link.parentElement.getAttribute('class') == 'courses') {
-                    link.setAttribute("onclick","displayYears("+link.getAttribute('id')+");");
+                    link.setAttribute("onclick","courseClicked("+link.getAttribute('id')+");");
                 }
             }
         }
 
 
 /*----DISPLAYING YEARS-----------------------------------------------------------------------------------------------------------*/
+
+		var courseClicked = function(searchValue){
+			console.log("YOHO");
+        	//Update the url to contain the course search value
+			var state = { course: searchValue };
+			history.pushState(state, searchValue, "modules.html?course="+searchValue);
+			updateContent(state);
+		}
 
         //Displays the years of the course with the given searchValue
         var displayYears = function(searchValue){
@@ -264,7 +299,7 @@
                     var link = links[i];
                     var linkIDString = ""+link.getAttribute('id');
                     if(link.parentElement.getAttribute('class') == 'years') {
-                        link.setAttribute("onclick","displayModules("+linkIDString+");");
+                        link.setAttribute("onclick","yearClicked("+linkIDString+");");
                     }
                 }
             });
@@ -272,8 +307,20 @@
        
 /*----START UP CODE-------------------------------------------------------------------------------------------------------------*/
 
+		//Changes the history state when a year of a course has been clicked
+		var yearClicked = function(linkID){
+            var listString = ""+linkID;
+            var yearOfCourse = listString.substring(0,1);  
+            var searchValue = listString.substring(1,listString.length);
+        	//Update the url to contain the year of the course
+			var state = { course: searchValue, year: yearOfCourse };
+			history.pushState(state, searchValue+' year '+yearOfCourse, "modules.html?course="+searchValue+"&year="+yearOfCourse);
+			updateContent(state);
+		}
+
         //Takes a String with a yearOfCourse+SearchValue and adds a list to the "modulesOfTheYear" element
         var displayModules = function(listElement){
+
             var newModulesDiv = document.createElement('div');
             newModulesDiv.id = 'modulesOfTheYear';
             var listOfModules =  document.createElement('ul');
