@@ -1,0 +1,21 @@
+{
+  "query": "turn the lights off",
+  "topScoringIntent": {
+    "intent": "TurnAllOff",
+    "score": 0.9751273,
+    "actions": [
+      {
+        "triggered": true,
+        "name": "TurnAllOff",
+        "parameters": []
+      }
+    ]
+  },
+  "entities": [],
+  "dialog": {
+    "contextId": "4484fbd6-c25e-4cba-9d8c-914444e41522",
+    "status": "Finished",
+    "prompt": null,
+    "parameterName": null
+  }
+}
