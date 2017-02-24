@@ -27,9 +27,9 @@
         </div>
       </div>
     </nav>
-    <div id="options">
-        Waiting for Files to be read.
-    </div>
+    <div id="courses"></div>
+    <div id="years"></div>
+    <div id="modules"></div>
     <script>
 
 /*----DATABASE INITIALISATION---------------------------------------------------------------------------------------------------*/
@@ -62,41 +62,37 @@
         
         //Code run once the page is loaded.
         var startUp = function(){
-            displayCourses();
+            updateContent(window.history.state);
         }
 
+        //Change the content displayed on the screen according to the current state
+	    function updateContent(state) {
+	    	if (state == null){
+	    		console.log("The state is now:"+state);
+	   			return displayCourses();
+	    	}
+	    	else if(state['year']==null){
+	    		console.log("The state is now: {course:"+state['course']+"}");
+	    		return displayYears(state['course']);
+	    	}
+	    	else{
+	    		console.log("The state is now: {course:"+state['course']+"year:"+state['year']+"}");
+	    		return displayModules(state['year']+state['course']);
+	    	}
+	    }
 
-			    function updateContent(state) {
-			    	if (state == null){
-			   			return displayCourses();
-			    	}
-			    	else if(state['year']==null){
-			    		return displayYears(state['course']);
-			    	}
-			    	else{
-			    		return displayModules(state['year']+state['course']);
-			    	}
-			    }
-
-			    // Revert to a previously saved state
-			    window.onpopstate = function(event) {
-			      console.log('popstate fired!');
-			      updateContent(event.state);
-			    };
-
-			    /*
-			    // Change to a new state
-			    window.onpushstate = function(event) {
-			      console.log('pushstate fired!');
-			      updateContent(event.state);
-			    };
-			    */
+	    // Revert to a previously saved state
+	    window.onpopstate = function(event) {
+	      console.log('popstate fired!');
+	      updateContent(event.state);
+	    };
         
 /*----DISPLAYING COURSES--------------------------------------------------------------------------------------------------------*/
 
+		//Display all of the courses on the screen
         var displayCourses = function(){
-            var options = document.getElementById("options");
-            options.innerHTML = `
+            var courses = document.getElementById("courses");
+            courses.innerHTML = `
                 <ul class="courses">
                     <li id="482">Ancient and Medieval History and Culture</li>
                     <li id="23">Biblical and Theological Studies</li>
@@ -242,6 +238,12 @@
                     <li id="129">Statistics (PG Diploma)</li>
                 </ul>`;
 
+            //Remove content from other divs
+            var years = document.getElementById("years");
+            years.innerHTML = "";
+            var modules = document.getElementById("modules");
+            modules.innerHTML = "";
+
             //Add an onclick attribute to all listelements in lists of class 'courses' to displayYears()
             var links = document.getElementsByTagName('li');
             var howLongEachCourseHasBeenAround = "";
@@ -256,8 +258,8 @@
 
 /*----DISPLAYING YEARS-----------------------------------------------------------------------------------------------------------*/
 
+		//Changes the history state of the window and updates the content on screen
 		var courseClicked = function(searchValue){
-			console.log("YOHO");
         	//Update the url to contain the course search value
 			var state = { course: searchValue };
 			history.pushState(state, searchValue, "modules.html?course="+searchValue);
@@ -288,10 +290,17 @@
                         listOfYears += "<li id=\""+(i+1)+searchValue+"\">"+(i+1)+"th year</li>";
                     }
                 }
-                listOfYears += "</ul><div id=\"modulesOfTheYear\"></div>"
+                listOfYears += "</ul>"
 
-                var options = document.getElementById("options");
-                options.innerHTML = listOfYears;
+                //Put the list into the document
+                var years = document.getElementById("years");
+                years.innerHTML = listOfYears;
+
+                //Remove content from other divs
+                var courses = document.getElementById("courses");
+                courses.innerHTML = "";
+                var modules = document.getElementById("modules");
+                modules.innerHTML = "";
 
                 //Add on onclick method to each of the listelements in lists of class 'years' to displayModules
                 var links = document.getElementsByTagName('li');
@@ -322,7 +331,7 @@
         var displayModules = function(listElement){
 
             var newModulesDiv = document.createElement('div');
-            newModulesDiv.id = 'modulesOfTheYear';
+            newModulesDiv.id = 'modules';
             var listOfModules =  document.createElement('ul');
             var listElementString = ""+listElement;
             var savedModulesString = getCookie("modules1");
@@ -350,8 +359,14 @@
 
                 //Replace old list of modules with the new one
                 newModulesDiv.append(listOfModules);
-                var modulesOfTheYear = document.getElementById("modulesOfTheYear");
+                var modulesOfTheYear = document.getElementById("modules");
                 modulesOfTheYear.parentNode.replaceChild(newModulesDiv,modulesOfTheYear);
+
+                //Remove content from other divs
+                var courses = document.getElementById("courses");
+                courses.innerHTML = "";
+                var years = document.getElementById("years");
+                years.innerHTML = "";
 
             });
         }
