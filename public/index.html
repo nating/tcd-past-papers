@@ -125,6 +125,8 @@
             	//Get modules from the user's cookie
                 var modules = modulesString.split(',');
 
+                modules.sort();
+
                 //Add all the modules to an unordered list
                 var newDiv = document.createElement('div');
                 newDiv.id = 'modulesBox';
