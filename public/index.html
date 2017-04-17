@@ -152,15 +152,16 @@
             var li = document.createElement('li');
             li.id = id;
             li.className = "text-left";
-            li.onclick = function(){ displayYears(id).then(); displayModulesBox();};
+            li.onclick = function(){ displayYears(id); displayModulesBox();};
             li.append(document.createTextNode(id));
             getModuleName(id).then(function(name){
                 if(id==lastActive){
-                    li.innerHTML = '<b>' + id+' '+ name+'</b><hr>';
+                    li.innerHTML += ' '+ name+'<hr>';
+                    li.style['font-weight'] = "bold";
                     parentNode.appendChild(li);
                 }
                 else{
-                    li.innerHTML += ' ' + name+'<hr>';
+                    li.innerHTML += ' '+ name+'<hr>';
                     parentNode.appendChild(li);
                 }
             })
