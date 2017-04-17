@@ -149,7 +149,7 @@
             var li = document.createElement('li');
             li.id = id;
             li.className = "text-left";
-            li.onclick = function(){ displayYears(id); };
+            li.onclick = function(){ displayYears(id); displayModulesBox();};
             li.append(document.createTextNode(id));
             getModuleName(id).then(function(name){
                 if(id==lastActive){
