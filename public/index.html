@@ -131,7 +131,7 @@
             li.onclick = function(){ displayYears(id); };
             li.append(document.createTextNode(id))
             getModuleName(id).then(function(name){
-                li.innerHTML += ' ' + name;
+                li.innerHTML += ' ' + name+'<hr>';
                 parentNode.appendChild(li);
             })
         }
@@ -169,18 +169,6 @@
 					ys.appendChild(ys.childNodes[i]);
 				}
 
-                //Set the height of the yearsBox
-                var bodyHeight = document.getElementsByTagName('html')[0].clientHeight;
-                var modulesBox = document.getElementById('modulesBox');
-                var yearsBox = document.getElementById('yearsBox');
-                var navHeight = document.getElementsByTagName('nav')[0].clientHeight;
-                /*if(modulesBox.clientHeight<bodyHeight){
-                    modulesBox.style["margin-top"] = ((bodyHeight/2)-(modulesBox.clientHeight/2))+(navHeight)+"px";
-                }
-                if(yearsBox.clientHeight<bodyHeight){
-                    yearsBox.style["margin-top"] = ((bodyHeight/2)-(yearsBox.clientHeight/2))+(navHeight)+"px";
-                }*/
-
             });
 
         };
@@ -207,6 +195,7 @@
             else{
                 var modulesList = "";
                 var alreadyPresent = false;
+                //Create list of all modules that user has checked already
                 for(var i=0;i<modules.length;i++){
                     console.log("Checking that "+modules[i]+" is not "+moduleCode+".");
                     if(modules[i]==moduleCode){
@@ -218,6 +207,7 @@
                         modulesList += modules[i]+",";
                     }
                 }
+                //If not already present, add new module to the module list and update cookie with new list
                 if(alreadyPresent==false){
                     modulesList += moduleCode;
                     document.cookie = "lastActiveModule1="+moduleCode+";  path=/; "
