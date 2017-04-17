@@ -128,7 +128,7 @@
                 modules.sort();
                 console.log("These are the modules in their order:"+modules);
 
-                //Add all the modules to an unordered list
+                //Add all the modules to a list ordered alphabetically
                 var newDiv = document.createElement('div');
                 newDiv.id = 'modulesBox';
                 newDiv.setAttribute('class',"col-lg-6");
@@ -152,7 +152,7 @@
             var li = document.createElement('li');
             li.id = id;
             li.className = "text-left";
-            li.onclick = function(){ displayYears(id); displayModulesBox();};
+            li.onclick = function(){ displayModulesBox(); displayYears(id); };
             li.append(document.createTextNode(id));
             getModuleName(id).then(function(name){
                 if(id==lastActive){
