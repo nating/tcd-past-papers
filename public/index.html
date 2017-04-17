@@ -143,14 +143,23 @@
 
         //Adds a module with module code 'id' to a list 'parentNode'
         function addModule(id, parentNode){
+
+            var lastActive = getCookie("lastActiveModule1");
+
             var li = document.createElement('li');
             li.id = id;
             li.className = "text-left";
             li.onclick = function(){ displayYears(id); };
-            li.append(document.createTextNode(id))
+            li.append(document.createTextNode(id));
             getModuleName(id).then(function(name){
-                li.innerHTML += ' ' + name+'<hr>';
-                parentNode.appendChild(li);
+                if(id==lastActive){
+                    li.innerHTML = '<b>' + id+' '+ name+'</b><hr>';
+                    parentNode.appendChild(li);
+                }
+                else{
+                    li.innerHTML += ' ' + name+'<hr>';
+                    parentNode.appendChild(li);
+                }
             })
         }
 
