@@ -59,7 +59,7 @@
         firebase.initializeApp(config);
         var db = firebase.database();
 
-/*----UNIVERSAL CONSTANTS------------------------------------------------------------------------------------------------------*/
+/*----UNIVERSAL CONSTANTS-------------------------------------------------------------------------------------------------------*/
 
         var MODULE_ID = 0;
         var YEAR_OF_COURSE = 1;
@@ -73,7 +73,7 @@
 
         var SEARCH_SUGGESTION_LIMIT = 5;
 
-/*----START UP CODE------------------------------------------------------------------------------------------------------------*/
+/*----START UP CODE-------------------------------------------------------------------------------------------------------------*/
         
         window.addEventListener('load',function(){ startUp();},false);
         
@@ -174,12 +174,12 @@
                 var modulesBox = document.getElementById('modulesBox');
                 var yearsBox = document.getElementById('yearsBox');
                 var navHeight = document.getElementsByTagName('nav')[0].clientHeight;
-                if(modulesBox.clientHeight<bodyHeight){
+                /*if(modulesBox.clientHeight<bodyHeight){
                     modulesBox.style["margin-top"] = ((bodyHeight/2)-(modulesBox.clientHeight/2))+(navHeight)+"px";
                 }
                 if(yearsBox.clientHeight<bodyHeight){
                     yearsBox.style["margin-top"] = ((bodyHeight/2)-(yearsBox.clientHeight/2))+(navHeight)+"px";
-                }
+                }*/
 
             });
 
