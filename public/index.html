@@ -173,15 +173,15 @@
 
             if(moduleCode==""){ return -1; }
 
+            //Set the last active module to be the module being displayed
+            document.cookie = "lastActiveModule1="+moduleCode+";";
+
             //Get the years of the module from the database
             db.ref().child('Modules').child(moduleCode).once('value').then(function(snapshot){ 
 
                 var module = snapshot.val(); 
                 var moduleName  = module["name"];
                 var papers = module["papers"];
-
-                //Set the last active module to be the module being displayed
-                document.cookie = "lastActiveModule1="+moduleCode+";";
 
                 //Create a list of years for the module
                 var htmlListOfYears = "<h2>"+moduleName+"</h2><ul id='yearsList'>";
