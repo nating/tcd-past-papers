@@ -94,12 +94,12 @@
             if(modulesString==""){
                 var modulesBox = document.getElementById("modulesBox");
                 modulesBox.innerHTML =
-                    `<p>
-                        Welcome to Trinity Exam Papers. This website is for students to find past papers in a less convoluted way.
+                    `<p style="padding:50px">
+                        Welcome to Trinity Exam Papers. This website is for students to find past papers in a less convoluted way.<br><br>
 
-                        This site uses cookies to remember what modules you do so that it can show you those past papers when you visit.
+                        This site <b>uses cookies</b> to remember what modules you do so that it can show you those past papers when you visit.<br><br>
 
-                        To have your modules' past papers show up on the home page, tick which modules you study on the "All Courses" page.
+                        To have your modules' past papers show up on the home page, tick which modules you study on the "All Courses" page. Or search their module code in the search box.
                     </p>`;
             }
             else{
@@ -260,7 +260,7 @@
         //Displays the search Suggestions box
         function displaySearchSuggestions(){
 
-            var searchVal = document.getElementById('textInput').value;
+            var searchVal = document.getElementById('textInput').value.toUpperCase();
 
             //Get the first x modules after the text input ordered by key from the database
             db.ref().child('Modules').orderByKey().startAt(searchVal).limitToFirst(SEARCH_SUGGESTION_LIMIT).once('value').then(function(snapshot){ 

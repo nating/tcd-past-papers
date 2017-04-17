@@ -37,3 +37,11 @@ ul#suggestionsBox li:first-child{
 	border-top-left-radius: 0px;
 	border-top-right-radius: 0px;
 }
+
+.years li{
+	cursor: pointer;
+}
+
+#info{
+	padding: 50px;
+}
