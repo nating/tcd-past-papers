@@ -152,9 +152,8 @@
             var li = document.createElement('li');
             li.id = id;
             li.className = "text-left";
-            li.onclick = function(){ displayYears(id); displayModulesBox();};
+            li.onclick = function(){ displayYears(id);};
             li.append(document.createTextNode(id));
-            parentNode.appendChild(li);
             getModuleName(id).then(function(name){
                 if(id==lastActive){
                     li.innerHTML += ' '+ name+'<hr>';
@@ -163,6 +162,7 @@
                 else{
                     li.innerHTML += ' '+ name+'<hr>';
                 }
+                parentNode.appendChild(li);
             })
         }
 
@@ -172,6 +172,11 @@
         var displayYears = function(moduleCode){
 
             if(moduleCode==""){ return -1; }
+
+            //Change which module is bold in the list
+            var lastActive = getCookie("lastActiveModule1");
+            document.getElementById(lastActive).style['font-weight'] = "";
+            document.getElementById(moduleCode).style['font-weight'] = "bold";
 
             //Set the last active module to be the module being displayed
             document.cookie = "lastActiveModule1="+moduleCode+";";
