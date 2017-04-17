@@ -1,7 +1,10 @@
 # Examinating [![Build Status][travis-badge]][travis-link]
+
+<img src="/public/logo.png" width="100px"></img>
+
 A Website for students at Trinity College Dublin to more easily navigate the past examination papers.
 
-It can be found at: https://tcdpastpapers.firebaseapp.com/
+It is currently live at: https://tcdpastpapers.firebaseapp.com/
 
 ## Overview
 The idea for this project is to mimic what has already been done for Computer Science students with www.github.com/nating/trinity-cs-website (https://nating.netsoc.ie), for students of every faculty of the college.  
