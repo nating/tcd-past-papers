@@ -98,8 +98,8 @@
         //Code run once the page is loaded.
         var startUp = function(){
             var lastActiveModule1 = getCookie("lastActiveModule1");
-            displayYears(lastActiveModule1);
             displayModulesBox();
+            displayYears(lastActiveModule1);
         }
 
 /*----DISPLAYING MODULES-------------------------------------------------------------------------------------------------------*/
@@ -175,8 +175,12 @@
 
             //Change which module is bold in the list
             var lastActive = getCookie("lastActiveModule1");
-            document.getElementById(lastActive).style['font-weight'] = "";
-            document.getElementById(moduleCode).style['font-weight'] = "bold";
+            if(document.getElementById(lastActive)){
+                document.getElementById(lastActive).style['font-weight'] = "";
+            }
+            if(document.getElementById(moduleCode)){
+                document.getElementById(moduleCode).style['font-weight'] = "bold";
+            }
 
             //Set the last active module to be the module being displayed
             document.cookie = "lastActiveModule1="+moduleCode+";";
