@@ -174,7 +174,7 @@
                 //Create a list of years for the module
                 var htmlListOfYears = "<h2>"+moduleName+"</h2><ul id='yearsList'>";
                 for(var i=0;i<papers.length;i++){
-                    htmlListOfYears += "<li><a href=\""+papers[i]["link"]+"\">"+papers[i]["year"]+"</a></li>";
+                    htmlListOfYears += "<li><a target='_blank' href=\""+papers[i]["link"]+"\">"+papers[i]["year"]+"</a></li>";
                 }
                 var htmlListOfModuleNames = "</ul>"
                 var yearsBox = document.getElementById("yearsBox");
