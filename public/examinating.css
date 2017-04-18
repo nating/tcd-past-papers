@@ -24,6 +24,10 @@ ul {
 	cursor: pointer;
 }
 
+.courses li:hover{
+	cursor:pointer;
+}
+
 #modulesBox ul li:hover {
 	font:bold;
 }
