@@ -19,7 +19,7 @@ ul {
 	class="lead";
 }
 
-#modulesBox ul li {
+#modulesBox ol li {
 	margin-top:2%;
 	cursor: pointer;
 }
