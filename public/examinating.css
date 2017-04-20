@@ -24,10 +24,6 @@ ul {
 	cursor: pointer;
 }
 
-.courses li:hover{
-	cursor:pointer;
-}
-
 #modulesBox ul li:hover {
 	font:bold;
 }
@@ -48,4 +44,8 @@ ul#suggestionsBox li:first-child{
 
 #info{
 	padding: 50px;
+}
+
+.courses li:hover{
+	cursor:pointer;
 }
