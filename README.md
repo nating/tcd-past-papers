@@ -7,10 +7,10 @@ A Website for students at Trinity College Dublin to more easily navigate the pas
 It is currently live at: https://tcdpastpapers.firebaseapp.com/
 
 ## Overview
-The idea for this project is to mimic what has already been done for Computer Science students with www.github.com/nating/trinity-cs-website (https://nating.netsoc.ie), for students of every faculty of the college.  
+The idea for this project is to mimic what has already been done for Computer Science students with [this project][nating-repo] that you can see [here][nating-site], for students of every faculty of the college.  
 
 ## How it works
-Past papers are organised questionably [here][https://www.tcd.ie/academicregistry/exams/past-papers/annual/].  
+Past papers are organised questionably [here][trinity-examinations].  
 
 The past paper links have been scraped with the java programs in this repo's src files.  
 
@@ -20,11 +20,19 @@ Users select the modules they study and cookies store this information in their 
 
 When users view the homepage, the links for their past papers in their modules show up for them.
 
-## Where we at?
+## Where are we at?
 The site is currently live and has active users.
 
-There is more to be done in terms of UI and Usability. (See Issues)
+There is more to be done in terms of UI and Usability. [(See Issues)][issues]
 
+### Thanks
+Shout out to [Tiarnan McGrath][tiarnan] who helped me out a lot even though he'd be able to do it a lot better himself.
+
+[firebase]: https://firebase.google.com/
+[issues]: https://github.com/nating/tcd-past-papers/issues
+[nating-repo]: www.github.com/nating/trinity-cs-website
+[nating-site]: https://nating.netsoc.ie
+[tiarnan]: https://github.com/tiarnann
 [travis-badge]: https://img.shields.io/travis/nating/examinating.svg
 [travis-link]: https://travis-ci.org/nating/examinating
-[firebase]: https://firebase.google.com/
+[trinity-examinations]: https://www.tcd.ie/academicregistry/exams/past-papers/annual/
