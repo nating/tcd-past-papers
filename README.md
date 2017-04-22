@@ -10,9 +10,9 @@ It is currently live at: https://tcdpastpapers.firebaseapp.com/
 The idea for this project is to mimic what has already been done for Computer Science students with [this project][nating-repo] that you can see [here][nating-site], for students of every faculty of the college.  
 
 ## How it works
-Past papers are organised questionably [here][trinity-examinations].  
+Trinity College's past papers are organised questionably [here][trinity-examinations].  
 
-The past paper links have been scraped with the java programs in this repo's src files.  
+The past paper links have been scraped into a json with this repo's src files.  
 
 The site is being hosted on [Firebase][firebase] and the past paper links are in a JSON file in a NoSQL (😬) server there.
 
