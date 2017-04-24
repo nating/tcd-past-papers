@@ -33,6 +33,6 @@ Shout out to [Tiarnan McGrath][tiarnan] who helped me out a lot even though he'd
 [nating-repo]: www.github.com/nating/trinity-cs-website
 [nating-site]: https://nating.netsoc.ie
 [tiarnan]: https://github.com/tiarnann
-[travis-badge]: https://img.shields.io/travis/nating/examinating.svg
-[travis-link]: https://travis-ci.org/nating/examinating
+[travis-badge]: https://img.shields.io/travis/nating/tcd-past-papers.svg
+[travis-link]: https://travis-ci.org/nating/tcd-past-papers
 [trinity-examinations]: https://www.tcd.ie/academicregistry/exams/past-papers/annual/
