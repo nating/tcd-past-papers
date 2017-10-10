@@ -4,7 +4,7 @@
 
 A Website for students at Trinity College Dublin to more easily navigate the past examination papers.
 
-It is currently live at: https://tcdpastpapers.firebaseapp.com/
+It is currently live at: https://trinityexampapers.com
 
 ## Overview
 The idea for this project is to mimic what has already been done for Computer Science students with [this project][nating-repo] that you can see [here][nating-site], for students of every faculty of the college.  
