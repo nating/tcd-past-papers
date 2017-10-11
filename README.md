@@ -1,4 +1,4 @@
-# TCD Past Papers [![Build Status][travis-badge]][travis-link]
+# TCD Past Papers [![Build Status][travis-badge]][travis-link] [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
 <img src="/public/logo.png" width="100px"></img>
 
